@@ -13,11 +13,13 @@ function onWindowResize(){
 
 }
 
-var cube;
 var renderer;
 var scene;
 var camera;
 var orbitControls;
+
+// stores the map data (i.e. game "level")
+var map;
 
 function init(){
 	scene = new THREE.Scene();
@@ -58,7 +60,7 @@ function init(){
 	light3.position.set(0, -400, 200);
 	scene.add(light3)
 
-	let light_background = new THREE.AmbientLight(0x202020);
+	let light_background = new THREE.AmbientLight(0x404040);
 	scene.add(light_background);
 
 
@@ -91,20 +93,20 @@ function init(){
 			var sky = new THREE.Mesh( skyGeo, skyMat );
 			scene.add( sky );
 	/* End weird code */
-
-
 }
 
-
+// some keys such as directional movement should be turned on/off
 const keyStates = {
 	'Left': false,
 	'Right': false,
 	'Up': false,
 	'Down': false,
 	'Shift': false,
-	'Control': false
+	'Control': false,
+	'Space': false,
 }
 
+// other keys such as jump and reset, etc. should be queued up and only active once
 function initKeyboard(){
 	console.log("Now listening for keyboard presses...");
 	document.addEventListener('keydown', function(event) {
@@ -136,6 +138,12 @@ function initKeyboard(){
 		else if (keyPressed === "KeyR" ){
 			resetFunction();
 		}
+
+		// note space is queued up and only unset by the inputUpdate not keyup event
+		else if (keyPressed === "Space" ){
+			keyStates['Space'] = true;
+		}
+
 	})
 	document.addEventListener('keyup', function(event) {
 		let keyReleased = event.code;
@@ -156,19 +164,16 @@ function initKeyboard(){
 		else if (keyReleased === 'ShiftLeft' || keyReleased === 'ShiftRight'){
 			keyStates['Shift'] = false;
 		}
-		else if (keyReleased === 'ControlLeft' || keyReleased === 'ControlRight'){
-			keyStates['Control'] = false;
-		}
+		// else if (keyReleased === 'ControlLeft' || keyReleased === 'ControlRight'){
+		// 	keyStates['Control'] = false;
+		// }
 	})
-}
-
-function resetFunction(){
-	// TODO: Implement this
-	console.log("Resetting game state")
 }
 
 init();
 initKeyboard();
+
+
 
 
 // function createRobotScene(){
@@ -183,11 +188,15 @@ function tick(){
 
 	requestAnimationFrame( tick );
 
-
+	inputUpdate();
 	physicsUpdate();
 	renderUpdate();
 
 	// console.log(keyStates)
+}
+
+function physicsUpdate(){
+	return;
 }
 
 function renderUpdate(){
@@ -195,22 +204,33 @@ function renderUpdate(){
 	renderer.render(scene, camera);
 }
 
-function physicsUpdate(){
+function inputUpdate(){
 	// sample rotate cube
 	player.mesh.rotation.y += 0.01;
 	player.mesh.rotation.x += 0.005;
 
 	if (keyStates['Left'] && !keyStates['Right']){
-		player.mesh.position.x -= 2;
+		player.mesh.position.x -= 10;
 	}
 	if (keyStates['Right'] && !keyStates['Left']){
-		player.mesh.position.x += 2;
+		player.mesh.position.x += 10;
 	}
 	if (keyStates['Up'] && !keyStates['Down']){
-		player.mesh.position.z -= 2;
+		player.mesh.position.z -= 10;
 	}
 	if (keyStates['Down'] && !keyStates['Up']){
-		player.mesh.position.z += 2;
+		player.mesh.position.z += 10;
+	}
+
+	if (keyStates['Space'] ){
+		console.log("JUMP!")
+		player.mesh.position.y +=50;
+		keyStates['Space'] =false;
+	}
+	if (keyStates['Control'] ){
+		console.log("Go downn!")
+		player.mesh.position.y -=50;
+		keyStates['Control'] =false;
 	}
 
 	// console.log(keyStates)
@@ -235,20 +255,61 @@ function Player(){
 let player = new Player();
 
 // define the platform objects:
-function Platform(){
-	this.x = 1;
-	this.y = 1;
-	this.xwidth = 1000;
-	this.zwidth = 1000;
+function Platform(x, z, height){
+	this.x = x;
+	this.z = z;
+	this.xwidth = 600;
+	this.zwidth = 600;
+	this.height = height;
 
-	let geo = new THREE.BoxGeometry(this.xwidth,10,this.zwidth);
+	let geo = new THREE.BoxGeometry(this.xwidth,this.height,this.zwidth);
 	let mat = new THREE.MeshLambertMaterial( {color:0xaa4422});
 	this.mesh = new THREE.Mesh( geo, mat );
-
+	this.mesh.position.x = this.x;
+	this.mesh.position.z = this.z;
+	this.mesh.position.y = this.height/2;
 	scene.add(this.mesh);
 }
 let platforms = [];
-platforms.push(new Platform());
+let coins = [];
+// platforms.push(new Platform(600*0, 600*0,  10))
+// platforms.push(new Platform(600*1, 600*0,  70))
+// platforms.push(new Platform(600*2, 600*0, 10))
+// // platforms.push(new Platform(0,0,10));
+
+function loadMap(filename){
+	fetch(filename)
+  .then(response => response.json())
+	.then((json) =>{
+		map = json;
+		for (let ii = 0 ; ii<map.heights.length; ii++){
+			for (let jj = 0; jj < map.heights[0].length; jj++){
+				platforms.push(new Platform(600*ii, 600*jj, map.heights[ii][jj]*60 + 10));
+			}
+		}
+	});
+
+	console.log(platforms);
+}
+
+loadMap('maps/map_1.json');
+
+// variable to load GLTF mesh files
+
+var loader = new GLTFLoader();
+function loadCoinExample(){
+	filepath = 'models/super_mario_coin.gltf';
+	loader.load(
+		filepath,
+		function (gltf){
+			scene.add( gltf.scene);
+
+		}
+	)
+}
+// loadCoinExample();
 
 // start game timer
 requestAnimationFrame( tick );
+
+
