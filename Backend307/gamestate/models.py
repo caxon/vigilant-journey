@@ -39,14 +39,14 @@ class GamePlayer(models.Model):
 
     user = models.ForeignKey(
         User,
-        related_name="game_players",
+        related_name="players",
         on_delete=models.CASCADE,
         default=""
     )
 
     gamelobby = models.ForeignKey(
         GameLobby,
-        related_name="game_lobby",
+        related_name="players",
         on_delete=models.CASCADE
     )
     objects = GetOrNoneManager()
