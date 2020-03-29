@@ -1,1 +1,6 @@
 !include/.keep
+*.meta
+*.xml
+Backend307/.idea
+__pycache__
+.DS_Store
