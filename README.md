@@ -8,18 +8,18 @@ How to run:
 
 requires the following modules in the /includes folder:
 
-vigilant-journey\include
-  \ cannon-es
-    \. cannon.js
-  \ stats
-    \. stats.module.js
-  \ three
-    \ built
-      \. three.module.js
-    \ examples
-      \ jsm
-        \. FirstPersonControls.js
-        \. OrbitControls.js
-        \. PointerLockControls.js
-        \. TrackballControls.js
+vigilant-journey\include  
+  \ cannon-es  
+    \ cannon.js  
+  \ stats  
+    \ stats.module.js  
+  \ three  
+    \ built  
+      \ three.module.js  
+    \ examples  
+      \ jsm  
+        \ FirstPersonControls.js  
+        \ OrbitControls.js  
+        \ PointerLockControls.js  
+        \ TrackballControls.js  
 
