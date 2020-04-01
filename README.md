@@ -23,3 +23,7 @@ vigilant-journey\include
         \ PointerLockControls.js  
         \ TrackballControls.js  
 
+
+How to run backend:
+Go to Backend307 folder, then use terminal and run `python mangage.py runserver`.
+The server will be run on http://127.0.0.1:8000/
