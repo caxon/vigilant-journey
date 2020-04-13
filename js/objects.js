@@ -6,13 +6,13 @@ export class GroundPlane{
 		this.y = y;
 
     let geo = new THREE.PlaneGeometry(100,100, 32,32);
-    geo.rotateX(Math.PI/2);
+    geo.rotateX(-Math.PI/2);
     geo.translate(0,y,0);
     geo.y = y;
-		let mat = new THREE.MeshBasicMaterial(
-			{color: 0x3355cc,
-			side: THREE.DoubleSide});
-		this.mesh = new THREE.Mesh(geo, mat);		
+		let mat = new THREE.MeshStandardMaterial(
+			{color: 0x3355cc});
+    this.mesh = new THREE.Mesh(geo, mat);	
+    this.mesh.receiveShadow= true;	
     
     var groundMat = new CANNON.Material();
     var groundBody = new CANNON.Body({
@@ -48,6 +48,21 @@ export class Box{
     })
 
     this.body = body;
+  }
+
+  update(){
+    this.syncThreeCannon();
+  }
+
+  syncThreeCannon(){
+    this.mesh.position.x = this.body.position.x;
+    this.mesh.position.y = this.body.position.y;
+    this.mesh.position.z = this.body.position.z;
+  
+    this.mesh.quaternion.x = this.body.quaternion.x;
+    this.mesh.quaternion.y = this.body.quaternion.y;
+    this.mesh.quaternion.z = this.body.quaternion.z;
+    this.mesh.quaternion.w = this.body.quaternion.w;
   }
 
 }

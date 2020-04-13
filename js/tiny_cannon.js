@@ -188,6 +188,7 @@ function initThree(){
 	renderer = new THREE.WebGLRenderer( { antialias:true});
 	renderer.setPixelRatio( window.devicePixelRatio);
 	renderer.setSize( window.innerWidth, window.innerHeight);
+	renderer.shadowMap.enabled= true;
 	document.body.appendChild( renderer.domElement);
 
 	/* Automatically update window on resize */
@@ -199,8 +200,8 @@ function initThree(){
 	}, false);
 
 	camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 10000 );
-	camera.position.z = 10;
-	camera.position.y = 30;
+	camera.position.z = 20;
+	camera.position.y = 20;
 	scene.add (camera)
 	camera.lookAt(scene.position);
 
@@ -209,14 +210,26 @@ function initThree(){
 	/* 
 	ADD LIGHTING 
 	*/
-	let light = new THREE.PointLight(0xffbbbb);
-	light.position.set(0, 500, 200);
-	scene.add(light)
-	let light2 = new THREE.PointLight(0xbbffbb);
-	light2.position.set(-300, 0, 0);
-	scene.add(light2);
-	let light_background = new THREE.AmbientLight(0x606060);
-	scene.add(light_background);
+
+	let directional_light = new THREE.DirectionalLight(0xffffff, 0.5);
+	directional_light.position.set(0,  100, 0);
+	directional_light.castShadow = true;
+	directional_light.shadow.camera.left = -20;
+	directional_light.shadow.camera.right = 20;
+	directional_light.shadow.camera.bottom =-20;
+	directional_light.shadow.camera.top = 20;
+	scene.add(directional_light);
+
+	// let light = new THREE.PointLight(0xffbbbb);
+	// light.position.set(0, 500, 200);
+	// scene.add(light)
+	
+	// let light2 = new THREE.PointLight(0xbbffbb);
+	// light2.position.set(-300, 0, 0);
+	// scene.add(light2);
+
+	// let light_background = new THREE.AmbientLight(0x606060);
+	// scene.add(light_background);
 
 	scene.fog = new THREE.Fog( scene.background, 1, 5000 );
 
@@ -279,23 +292,13 @@ async function loadModels(resource_classes_array){
 	);
 }
 
-
-function syncThreeCannon(){
-	if (!player){
-		return;
-	}
-	player.mesh.position.x = player.body.position.x;
-	player.mesh.position.y = player.body.position.y;
-	player.mesh.position.z = player.body.position.z;
-
-	player.mesh.quaternion.x = player.body.quaternion.x;
-	player.mesh.quaternion.y = player.body.quaternion.y;
-	player.mesh.quaternion.z = player.body.quaternion.z;
-	player.mesh.quaternion.w = player.body.quaternion.w;
-}
-
 function tick(){
 	stats.begin();
+	let playerLastPosition = {
+		x:player.mesh.position.x,
+		y:player.mesh.position.y,
+		z:player.mesh.position.z
+	}
 
 	/*update physics engine */
 	world.step(1.0 / 60.0);
@@ -307,10 +310,12 @@ function tick(){
 	}
 
 	/* update camera */
+	camera.position.x += player.mesh.position.x-playerLastPosition.x;
+	camera.position.z += player.mesh.position.z-playerLastPosition.z;
 	camera.lookAt(player.mesh.position);
 
-	/* Sync physics and render engines */
-	syncThreeCannon();
+	console.log(player.mesh.position.x,playerLastPosition.x)
+
 
 	/* update renderer */
 	// updateObjects.forEach( (element) => element.update() )

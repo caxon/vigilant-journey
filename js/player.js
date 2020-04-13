@@ -8,9 +8,10 @@ export class Player{
 		this.y = y;
 		this.z = z;
 		
-		let geo = new THREE.SphereGeometry(1, 32,32 );
-		let mat = new THREE.MeshNormalMaterial();
+		let geo = new THREE.BoxGeometry(1,1,1 );
+		let mat = new THREE.MeshStandardMaterial(0xff00ff);
     this.mesh = new THREE.Mesh( geo, mat);
+    this.mesh.castShadow= true;
     
     let contact_mat = new CANNON.Material();
 		this.body = new CANNON.Body({
