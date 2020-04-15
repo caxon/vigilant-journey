@@ -31,7 +31,7 @@ class GameLobby(models.Model):
             users=[user.as_json for user in self.players.all()],  # players is related name(GamePlayer)
             boxes=[box.as_json for box in self.boxes.all()],
             coins=[coin.as_json for coin in self.coins.all()],
-
+            ground=self.groundplane.all()[0]
         )
 
 
@@ -69,6 +69,23 @@ class GamePlayer(models.Model):
             z=self.z,
 
         )
+
+
+class GroundPlane(models.Model):
+    y = models.FloatField(default=0)
+
+    gamelobby = models.ForeignKey(
+        GameLobby,
+        related_name="groundplane",
+        on_delete=models.CASCADE
+    )
+
+    def as_json(self):
+        return dict(
+            id=self.id,
+            y=self.y
+        )
+
 
 
 class Box(models.Model):
