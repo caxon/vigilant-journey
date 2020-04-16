@@ -66,7 +66,7 @@ class ResourceObject{
  */
 export class GoldCoin extends ResourceObject{
 
-	static path = '../models/gold_coin_3.glb';
+	static path = static_url + '/models/gold_coin_3.glb';
 	static debug_name = "Gold Coin"
 
 	constructor(x,y,z){
@@ -84,7 +84,7 @@ export class GoldCoin extends ResourceObject{
 
 export class SilverCoin extends ResourceObject{
 
-	static path = '../models/silver_coin_2.glb';
+	static path = static_url + '/models/silver_coin_2.glb';
 	static debug_name = "Silver Coin"
 
 	constructor(x,y,z){
@@ -102,7 +102,7 @@ export class SilverCoin extends ResourceObject{
 
 export class PurpleCoin extends ResourceObject{
 
-	static path = '../models/purple_coin_2.glb';
+	static path = static_url + '/models/purple_coin_2.glb';
 	static debug_name = "Purple Coin"
 
 	constructor(x,y,z){
@@ -123,7 +123,7 @@ export class PurpleCoin extends ResourceObject{
  */
 export class QuestionMark extends ResourceObject{
 
-	static path = "../models/question_mark_2.glb";
+	static path = static_url + "/models/question_mark_2.glb";
 	static debug_name = "Question Mark"
 
 	/**

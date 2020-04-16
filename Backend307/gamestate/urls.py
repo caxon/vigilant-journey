@@ -1,9 +1,12 @@
 from django.urls import path
+from django.conf.urls.static import static
+from django.conf import settings
+from .views import GameView
 
 
 # TODO: Finish views
 urlpatterns = [
-    path("user/", ), # User stats
-    path("game/<int:id>", ), # Game lobby
-    path("gamelist", ) # lobby list
-]
+    path("user/", GameView), # User stats
+    path("game/<int:id>", GameView), # Game lobby
+    path("gamelist", GameView) # lobby list
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
