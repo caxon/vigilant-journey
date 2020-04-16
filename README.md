@@ -27,3 +27,6 @@ vigilant-journey\include
 How to run backend:
 Go to Backend307 folder, then use terminal and run `python mangage.py runserver`.
 The server will be run on http://127.0.0.1:8000/
+
+
+You can now just run `python mangage.py runserver` in `Backend307` folder to start the game.
