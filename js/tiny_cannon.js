@@ -314,7 +314,7 @@ function tick(){
 	camera.position.z += player.mesh.position.z-playerLastPosition.z;
 	camera.lookAt(player.mesh.position);
 
-	console.log(player.mesh.position.x,playerLastPosition.x)
+	// console.log(player.mesh.position.x,playerLastPosition.x)
 
 
 	/* update renderer */
