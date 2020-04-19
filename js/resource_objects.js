@@ -6,7 +6,9 @@ let loader = new GLTFLoader();
 
 console.log("Module {objects.js} Loaded")
 
-let static_url = ".."
+if(!static_set) {
+    let static_url = "../"
+}
 
 /** Generic resource object for loading from gltf/glb files */
 class ResourceObject{
@@ -68,7 +70,7 @@ class ResourceObject{
  */
 export class GoldCoin extends ResourceObject{
 
-	static path = static_url + '/models/gold_coin_3.glb';
+	static path = static_url + 'models/gold_coin_3.glb';
 	static debug_name = "Gold Coin"
 
 	constructor(x,y,z){
@@ -86,7 +88,7 @@ export class GoldCoin extends ResourceObject{
 
 export class SilverCoin extends ResourceObject{
 
-	static path = static_url + '/models/silver_coin_2.glb';
+	static path = static_url + 'models/silver_coin_2.glb';
 	static debug_name = "Silver Coin"
 
 	constructor(x,y,z){
@@ -104,7 +106,7 @@ export class SilverCoin extends ResourceObject{
 
 export class PurpleCoin extends ResourceObject{
 
-	static path = static_url + '/models/purple_coin_2.glb';
+	static path = static_url + 'models/purple_coin_2.glb';
 	static debug_name = "Purple Coin"
 
 	constructor(x,y,z){
@@ -125,7 +127,7 @@ export class PurpleCoin extends ResourceObject{
  */
 export class QuestionMark extends ResourceObject{
 
-	static path = static_url + "/models/question_mark_2.glb";
+	static path = static_url + "models/question_mark_2.glb";
 	static debug_name = "Question Mark"
 
 	/**

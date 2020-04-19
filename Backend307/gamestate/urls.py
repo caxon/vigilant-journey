@@ -8,5 +8,6 @@ from .views import GameView
 urlpatterns = [
     path("user/", GameView), # User stats
     path("game/<int:id>", GameView), # Game lobby
-    path("gamelist", GameView) # lobby list
+    path("gamelist", GameView), # lobby list
+    path("", GameView)
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
