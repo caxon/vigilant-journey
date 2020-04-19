@@ -6,9 +6,11 @@ let loader = new GLTFLoader();
 
 console.log("Module {objects.js} Loaded")
 
-if(!static_set) {
-    let static_url = "../"
+if(typeof static_url === "undefined") {
+	console.log("Uhohh");
+    var static_url = "../";
 }
+
 
 /** Generic resource object for loading from gltf/glb files */
 class ResourceObject{
