@@ -4,12 +4,9 @@ import * as THREE from '../include/three/build/three.module.js';
 
 let loader = new GLTFLoader();
 
-console.log("Module {objects.js} Loaded")
+console.log("Module {objects.js} Loaded");
 
-if(typeof static_url === "undefined") {
-	console.log("Uhohh");
-    var static_url = "../";
-}
+var static_url = "../";
 
 
 /** Generic resource object for loading from gltf/glb files */
