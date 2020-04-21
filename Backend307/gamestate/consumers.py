@@ -38,8 +38,6 @@ class GameConsumer(WebsocketConsumer):
         user = self.scope['user']
 
         if user.is_authenticated:
-            # message = user.username + ': has joined game'
-            # print(user.username + ': has joined game')
             async_to_sync(self.channel_layer.group_send)(
                 self.room_group_name,
                 {
@@ -55,6 +53,9 @@ class GameConsumer(WebsocketConsumer):
                     'message': message
                 }
             )
+
+
+
 
         # Send message to room group
         async_to_sync(self.channel_layer.group_send)(

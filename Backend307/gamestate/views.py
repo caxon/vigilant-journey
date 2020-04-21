@@ -16,7 +16,9 @@ def index(request):
     context = {}
     return render(request, '../templates/gamestate/index.html', context)
 
+
 def room(request, room_id=None):
+
     return render(request, '../templates/gamestate/room.html', {
         'room_id': room_id
     })

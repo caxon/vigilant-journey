@@ -44,7 +44,16 @@ var game_socket = new WebSocket(
         'ws://' + window.location.host +
         '/ws/game/' + room_id + '/');
 
-var message;
+var message = {
+	'Left': false,
+	'Right': false,
+	'Up': false,
+	'Down': false,
+	'Shift': false,
+	'Control': false,
+	'Space': false
+};
+
 game_socket.onmessage = function(e) {
 	var data = JSON.parse(e.data);
 	message = data['message'];
@@ -80,16 +89,6 @@ async function init(){
 	loadMap();
 
 	log("START GAME")
-
-	message = {};
-	message['x'] = ""+player.mesh.x;
-	message['y'] = ""+player.mesh.y;
-	message['z'] = ""+player.mesh.z;
-
-
-	game_socket.send(JSON.stringify({
-		'message': message
-	}));
 
 	tick();
 }
@@ -127,6 +126,7 @@ function initKeyboard(){
 
 		if (keyPressed === 'KeyA' || keyPressed === 'ArrowLeft'){
 			keyStates['Left'] = true;
+			message['Left'] = true;
 		}
 		else if (keyPressed === 'KeyW' || keyPressed === 'ArrowUp'){
 			keyStates['Up'] = true;
@@ -159,7 +159,7 @@ function initKeyboard(){
 
 		if (keyReleased === 'KeyA' || keyReleased === 'ArrowLeft'){
 			keyStates['Left'] = false;
-
+			message['Left'] = false;
 		}
 		else if (keyReleased === 'KeyW' || keyReleased === 'ArrowUp'){
 			keyStates['Up'] = false;
@@ -330,9 +330,15 @@ function tick(){
 
 
 
-	// log(playerLastPosition.x);
+	try{
+		keyStates['Left'] = message['Left']
+		log(message['Left']);
+	}
+	catch (e) {
+    }
 
 
+	// log(keyStates);
 
 	/*update physics engine */
 	world.step(1.0 / 60.0);
@@ -358,11 +364,8 @@ function tick(){
 	stats.end();
 	/* enqueue next frame */
 	requestAnimationFrame(tick);
-	message = {};
 
-	message['x'] = ""+playerLastPosition.x;
-	message['y'] = ""+playerLastPosition.y;
-	message['z'] = ""+playerLastPosition.z;
+
 
 	game_socket.send(JSON.stringify({
 		'message': message
