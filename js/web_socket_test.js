@@ -464,6 +464,9 @@ function tick(){
 		z: player.mesh.position.z
 	};
 
+	/* update score */
+	let score_element = document.getElementById('score');
+	score_element.innerHTML = player.score;
 
 	// log(keyStates);
 
@@ -550,6 +553,8 @@ function handleClientPlayerCollision(e){
 			let coin = e.body.userData.ref;
 			player.score += coin.value;
 			coin.is_dead = true;
+
+			// TODO: Send a message to consumer
 		}
 }
 
