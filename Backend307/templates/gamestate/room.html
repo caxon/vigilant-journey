@@ -7,13 +7,14 @@
 					{% csrf_token %}
 			    <input type="text" id="player1" name="player1"/>
 					<input type="text" id="player2" name="player2"/>
-					<input type="text" id="currentScore" name="currentScore"/>
 					<input type="submit" value="Save" id="Save">
+					<input style = "visibility:hidden;" type="text" id="currentScore" name="currentScore"/>
+					<!-- <input type="submit" value="Save" id="Save"> -->
 				</form>
 		</div>
 		<div style="margin: auto; left:0px; top:100px; position:fixed;" class="overlay p-3 mb-2 text-white form-rounded">
 			<p class="lab"> Score </p>
-			<p class="count centre" id="score">20</p>
+			<p class="count centre" id="score"></p>
 		</div>
 		<div style="margin: auto; left:0px; top:200px; position:fixed;" class="overlay p-3 mb-2 text-white form-rounded">
 			<p class="lab"> Time </p>
@@ -71,7 +72,7 @@
                 'y': 0,
                 'z': 0
 						})
-						currentScore.value = score
+						// currentScore.value = score
 
 	</script>
 

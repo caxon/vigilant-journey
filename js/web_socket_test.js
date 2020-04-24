@@ -571,6 +571,8 @@ function tick(){
 	/* update score */
 	let score_element = document.getElementById('score');
 	score_element.innerHTML = player.score;
+	let currentScore = document.getElementById('currentScore')
+	currentScore.value = player.score
 
 	// log(keyStates);
 
