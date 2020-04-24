@@ -25,6 +25,9 @@ SECRET_KEY = 'im$&e5m1vt5lq%*7ftq%7+@^d6c99zii_3h1g+o^(=0&f=j1ov'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+if DEBUG:
+    import mimetypes
+    mimetypes.add_type("application/javascript", ".js", True)
 ALLOWED_HOSTS = []
 
 
@@ -50,9 +53,7 @@ CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            "hosts": [('127.0.0.1', 6379)],
-            'capacity': 1500,
-            'expiry': 10
+            "hosts": [('127.0.0.1', 6379)]
         }
     }
 }
