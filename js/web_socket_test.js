@@ -19,7 +19,7 @@ import {
 import {Player} from './player.js'
 
 let map ={
-	spawn_pos : [0,10,0]
+
 }
 
 /* Shortcut because i'm lazy */
@@ -39,7 +39,7 @@ let world;
 let stats;
 
 /* Objects which need to be updated every tick e.g. floating coins */
-let updateObjects = [];
+let coinObjects = [];
 
 let keyStates;
 
@@ -187,6 +187,7 @@ function initKeyboard(){
 		'Shift': false,
 		'Control': false,
 		'Space': false,
+		'E': false,
 	}
 
 	console.log("Now listening for keyboard presses...");
@@ -224,6 +225,10 @@ function initKeyboard(){
 		// note space is queued up and only unset by the inputUpdate not keyup event
 		else if (keyPressed === "Space" ){
 			keyStates['Space'] = true;
+		}
+
+		else if (keyPressed === "KeyE"){
+			keyStates['E'] = true;
 		}
 
 	})
@@ -287,16 +292,32 @@ let map_json = {
 			x:140,y:70,z:190, width:30,height:10,depth:30,color:"blue",
 		},
 
-
 	],
 	coins:[
-		{x: 10, y:10, z:10, type:"gold"},
-		{x: 10, y:10, z:10, type:"gold"},
-		{x: 10, y:10, z:10, type:"gold"},
-		{x: 10, y:10, z:10, type:"gold"},
-
+		{x: 10, y:10, z:10, type:"gold", coin_id:0, is_dead:true},
+		{x: 160.13470230751147, y:61.91393497449822, z:87.01602654835118, type:"silver", coin_id:1, is_dead:false},
+		{x: 151.88943567364234, y:78.25687719400048, z:120.7770362143744, type:"purple", coin_id:2, is_dead:false},
+		{x: 147.39622790877567, y:81.39784064458196, z:133.0516545584428, type:"gold", coin_id:3, is_dead:false},
+		{x: 141.7966330198268, y:83.6632531430812, z:147.75905577854738, type:"purple", coin_id:4, is_dead:false},
+		{x: 132.16066526548963, y:79.55174935050954, z:192.3196647181211, type:"purple", coin_id:5, is_dead:false},
+		{x: 146.62434806128144, y:78.13937121325216, z:193.10311156633023, type:"gold", coin_id:6, is_dead:false},
+		{x: 56.11498759700072, y:48.027357370415764, z:256.1916081020078, type:"gold", coin_id:7, is_dead:false},
+		{x: 13.581155421942599, y:31.022426583742106, z:240.49315224114372, type:"gold", coin_id:8, is_dead:false},
+		{x: 2.807253073718751, y:24.437833661772057, z:183.5654020819816, type:"gold", coin_id:9, is_dead:false},
+		{x: 93.01584590961727, y:15.718549324055617, z:154.50160650327686, type:"silver", coin_id:10, is_dead:false},
+		{x: 158.89526742970958, y:12.225885463623282, z:90.52624493768941, type:"gold", coin_id:11, is_dead:false},
+		{x: 170.5020979275686, y:1.634992764002668, z:55.24369213383543, type:"gold", coin_id:12, is_dead:false},
+		{x: 102.53797801675086, y:8.447503748097288, z:3.0256103915847627, type:"silver", coin_id:13, is_dead:false},
+		{x: 64.47950100624877, y:14.537392116870297, z:42.884109708515886, type:"gold", coin_id:14, is_dead:false},
+		{x: 51.398237178596915, y:13.149205032699115, z:11.49049049728296, type:"silver", coin_id:15, is_dead:false},
+		{x: 19.320107564051586, y:11.830710754340439, z:-20.54534071758647, type:"silver", coin_id:16, is_dead:false},
+		{x: -19.286154729731006, y:13.128674101849711, z:9.779188359460875, type:"silver", coin_id:17, is_dead:false},
+		{x: -11.442028363601937, y:10.01240937999322, z:-7.644811058553531, type:"silver", coin_id:18, is_dead:false},
 	],
-	spawn_location : [0,10,0]
+	spawn_pos : [0,10,0],
+	player_locations : [
+
+	]
 }
 
 
@@ -309,9 +330,11 @@ function loadMap(){
 	// scene.add(ground.mesh);
 	// console.log(ground)
 	// world.add(ground.body)
-
+	map.spawn_pos = map_json.spawn_pos;
+	map.blocks = map_json.blocks;
 	player = new Player(...map.spawn_pos);
 
+	/* load all blocks */
 	for (let i = 0 ; i < map_json.blocks.length; i++){
 		let info = map_json.blocks[i];
 		let block = new StaticBox(
@@ -319,6 +342,30 @@ function loadMap(){
 		scene.add(block.mesh);
 		world.add(block.body); 
 		block.body.material= groundMat;
+	}
+
+	/* load all coins */
+	for (let i = 0 ; i < map_json.coins.length; i++){
+		let info = map_json.coins[i];
+		let coin;
+		if (info.type=="gold"){
+			coin = new GoldCoin(info.x, info.y, info.z, info.coin_id)
+		}
+		else if (info.type=="purple"){
+			coin = new PurpleCoin(info.x, info.y, info.z, info.coin_id)
+		}
+		else if (info.type=="silver"){
+			coin = new SilverCoin(info.x, info.y, info.z, info.coin_id)
+		}
+		if (info.is_dead){
+			coin.is_dead = true
+		}
+		else {
+			coin.is_dead = false
+		}
+		scene.add(coin.mesh);
+		world.add(coin.collider);
+		coinObjects.push(coin);
 	}
 
 	/* collision events between the player and an object */
@@ -338,13 +385,9 @@ function loadMap(){
 	// 		{friction: 0.8, restitution: 0.5})
 	// )
 
-	let obj;
-	obj = new GoldCoin(10,10,10);
-	scene.add(obj.mesh);
-	world.add(obj.collider);
-	updateObjects.push(obj);
+
 	// scene.add(obj.mesh);
-	// updateObjects.add(obj);
+	// coinObjects.add(obj);
 
 	// obj = new StaticBox(10,10,10,10,10,10,"blue");
 	// scene.add(obj.mesh)
@@ -355,6 +398,27 @@ function loadMap(){
 	// window.opponent = opponent;
 }
 
+/** Save map in current state to a json file for loading later */
+function saveMap(){
+	let map_builder = {};
+	map_builder.spawn_pos = map.spawn_pos;
+	map_builder.blocks = map.blocks; /* save static list of blocks */
+	map_builder.coins = [];
+	for (let i = 0; i < coinObjects.length; i++){
+		let coin= coinObjects[i];
+		let coin_obj = {
+			x: coin.mesh.position.x,
+			y: coin.mesh.position.y,
+			z: coin.mesh.position.z,
+			is_dead: coin.is_dead,
+			type: coin.name
+		}
+		map_builder.coins.push(coin_obj);
+	}
+	console.log(map_builder)
+}
+
+window.saveMap = saveMap
 /**
  * Initialize three.js rendering variables.
  * Must run before any sort of rendering.
@@ -519,17 +583,17 @@ function tick(){
 	directional_light.target = player.mesh;
 
 	/* loop through backwards to allow for dynamic deletion */
-	for (var i = updateObjects.length - 1; i >= 0; i--) {
-		updateObjects[i].update();
-		// console.log(updateObjects[i].mesh.position)
-    if (updateObjects[i].is_dead) { 
-				// world.remove(updateObjects[i].body)
-				scene.remove(updateObjects[i].mesh)
+	for (var i = coinObjects.length - 1; i >= 0; i--) {
+		coinObjects[i].update();
+		// console.log(coinObjects[i].mesh.position)
+    if (coinObjects[i].is_dead) { 
+				world.removeBody(coinObjects[i].collider)
+				scene.remove(coinObjects[i].mesh)
     }
 }
 
 	/* update renderer */
-	// updateObjects.forEach( (element) => element.update() )
+	// coinObjects.forEach( (element) => element.update() )
 	renderer.render(scene, camera);
 
 	stats.end();
@@ -568,8 +632,8 @@ function handleClientPlayerCollision(e){
 			player.jumps_remaining = player.max_jumps;
 		}
 		if (e.body.userData.type == "coin"){
-			console.log("hit a coin!")
 			let coin = e.body.userData.ref;
+			console.log("hit a coin! #", coin.coin_id, " value:", coin.value)
 			player.score += coin.value;
 			coin.is_dead = true;
 

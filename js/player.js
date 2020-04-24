@@ -80,7 +80,6 @@ export class Player{
     }
   
     if (keyStates['Space'] ){
-      console.log("JUMP!")
       if (this.jumps_remaining > 0){
         this.body.velocity.y = 16;
         this.jumps_remaining -= 1;
@@ -91,6 +90,12 @@ export class Player{
       console.log("Go downn!")
       // player.mesh.position.y -=50;
       keyStates['Control'] =false;
+    }
+
+    /** Debugging message to plant coin locations */
+    if(keyStates["E"]){
+      // console.log(`{x: ${this.mesh.position.x}, y:${this.mesh.position.y}, z:${this.mesh.position.z}, type:"gold"},`)
+      keyStates['E'] = false;
     }
   
     /* slowly reduce velocity and rotation. also cap at max speed*/

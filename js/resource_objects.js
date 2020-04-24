@@ -16,8 +16,6 @@ class ResourceObject{
 		if (this.prototypeMesh === null){
 			console.error("Must load the mesh via loadResources before using ResourceObject's")
 		}
-		console.log("ptm",this.prototypeMesh)
-		console.log(this)
 		this.mesh = this.constructor.prototypeMesh.clone();
 		this.mesh.position.set(x,y,z);
 		this.global_id = this.constructor.object_id_count;
@@ -30,7 +28,7 @@ class ResourceObject{
 	static prototypeMesh = null;
 	static debug_name = "DEBUG NAME NOT DEFINED"
 
-	static object_id  = 0;
+	static object_id_count  = 0;
 
 	/**
 	 * Load resorces specified in Class.path static variable.
@@ -78,10 +76,12 @@ export class GoldCoin extends ResourceObject{
 
 	static path = static_url + 'models/gold_coin_3.glb';
 	static debug_name = "Gold Coin";
+	static name = "gold"
 
 	static value =5;
-	constructor(x,y,z){
+	constructor(x,y,z, coin_id){
 		super(x,y,z);
+		this.coin_id = coin_id;
 		this.rotation = 0;
 		this.collider = new CANNON.Body({mass:0});
 		this.collider.addShape(new CANNON.Sphere(1.5));
@@ -90,6 +90,9 @@ export class GoldCoin extends ResourceObject{
 
 		this.mesh.children[2].castShadow= true;
 		this.value = this.constructor.value;
+		this.name = this.constructor.name;
+
+		// console.log(this.global_id)
 	}
 	update(){
 		this.rotation += 0.02;
@@ -100,39 +103,29 @@ export class GoldCoin extends ResourceObject{
 	}
 }
 
-export class SilverCoin extends ResourceObject{
+export class SilverCoin extends GoldCoin{
 
 	static path = static_url + 'models/silver_coin_2.glb';
 	static debug_name = "Silver Coin"
+	static name = "silver"
 
-	constructor(x,y,z){
-		super(x,y,z);
-		this.rotation = 0;
-	}
-	update(){
-		this.rotation += 0.02;
-		if (this.rotation > 2*Math.PI){
-			this.rotation %= 2*Math.PI;
-		}
-		this.mesh.rotation.z = this.rotation;
+	static value = 2;
+
+	constructor(x,y,z, coin_id){
+		super(x,y,z, coin_id);
 	}
 }
 
-export class PurpleCoin extends ResourceObject{
+export class PurpleCoin extends GoldCoin{
 
 	static path = static_url + 'models/purple_coin_2.glb';
 	static debug_name = "Purple Coin"
+	static name = "purple"
 
-	constructor(x,y,z){
-		super(x,y,z);
-		this.rotation = 0;
-	}
-	update(){
-		this.rotation += 0.02;
-		if (this.rotation > 2*Math.PI){
-			this.rotation %= 2*Math.PI;
-		}
-		this.mesh.rotation.z = this.rotation;
+	static value = 10;
+
+	constructor(x,y,z, coin_id){
+		super(x,y,z, coin_id);
 	}
 }
 
