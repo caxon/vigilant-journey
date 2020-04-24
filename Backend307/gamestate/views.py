@@ -18,7 +18,7 @@ def index(request):
     context = {}
     return render(request, '../templates/gamestate/index.html', context)
 
-# @login_required #enforces login (?)
+@login_required #enforces login (?)
 def room(request, room_id=None):
     user = None
     if request.user.is_authenticated:
