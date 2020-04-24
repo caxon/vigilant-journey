@@ -16,10 +16,11 @@ import {
 	StaticBox,
 } from './objects.js';
 
-import {Player} from './player.js'
+import {Player} from './player.js';
 
+/* store global map data */
 let map ={
-
+	blocks: null,
 }
 
 /* Shortcut because i'm lazy */
@@ -42,6 +43,8 @@ let stats;
 let coinObjects = [];
 
 let keyStates;
+
+let local_timer = 120;
 
 /* track the player with this light to provide player shadows */
 let directional_light;
@@ -165,6 +168,8 @@ async function init(){
 	let join_msg = {'message': {'type': "join"}, 'player': player_id};
 	game_socket.send(JSON.stringify(join_msg));
 	tick();
+
+	start_local_timer();
 }
 init();
 
@@ -175,6 +180,26 @@ function initStats(){
 	stats = new Stats();
 	stats.showPanel( 0 );
 	document.body.appendChild( stats.dom );
+}
+
+function start_local_timer(){
+	document.getElementById("timer").innerHTML = local_timer;
+	setTimeout(countdown, 1000);
+}
+
+function countdown(){
+	local_timer -= 1;
+	document.getElementById("timer").innerHTML = local_timer;
+	if (local_timer > 0){
+		setTimeout(countdown, 1000)
+	}
+	else(
+		timeup()
+	)
+}
+
+function timeup(){
+	console.log("TIME IS UP!")
 }
 
 function initKeyboard(){
@@ -421,7 +446,7 @@ window.saveMap = saveMap
  */
 function initThree(){
 	scene = new THREE.Scene();
-	scene.add ( new THREE.AxesHelper(5) );
+	// scene.add ( new THREE.AxesHelper(5) );
 
 	renderer = new THREE.WebGLRenderer( { antialias:true});
 	renderer.setPixelRatio( window.devicePixelRatio);
@@ -457,8 +482,8 @@ function initThree(){
 	directional_light.castShadow = true;
 	directional_light.shadow.camera.left = -20;
 	directional_light.shadow.camera.right = 20;
-	directional_light.shadow.camera.bottom =-20;
-	directional_light.shadow.camera.top = 20;
+	directional_light.shadow.camera.bottom =-50;
+	directional_light.shadow.camera.top = 50;
 	scene.add(directional_light);
 
 	// let light = new THREE.PointLight(0xffbbbb);
@@ -553,6 +578,11 @@ function tick(){
 
 	/*update physics engine */
 	world.step(1.0 / 60.0);
+
+	/* move player back to spawn if they fall off map */
+	if (player.mesh.position.y < -20){
+		resetFunction()
+	}
 
 	/* update controls */
 	controls.update();
