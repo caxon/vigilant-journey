@@ -1,23 +1,30 @@
+{% extends "user/base.html" %}
+{% block content %}
+
 <h1>Create User</h1>
 <form action="" method="post">
-    {% csrf_token %}
-    <p>
-        Username: <input type="text" name="username" value="{{ form.data.username }}" />
-        {{ form.username.errors }}
-    </p>
-    <p>
-      Email: <input type="text" name="email" value="{{form.data.email}}" />
-      {{ form.email.errors }}
-    </p>
-    <p>
-      Create Password: <input type="password" name="password" />
-      {{ form.password.errors }}
-    </p>
-    <p>
-      Confirm Password: <input type="password" name="password_confirm" />
-      {{ form.password_confirm.errors }}
-    </p>
-    <p>
-      <input type="submit" value="Create" />
-    </p>
+  {% csrf_token %}
+  <div class="form-group">
+    <label for="username"> Username: </label>
+    <input type="text" name="username" placeholder="username">
+    {{ form.username.errors }}
+  </div>
+  <div class="form-group">
+    <label for="email"> Email: </label>
+    <input type="text" name="email" placeholder="email">
+    {{ form.email.errors }}
+  </div>
+  <div class="form-group">
+    <label for="password"> Password: </label>
+    <input type="password" name="password" placeholder="password">
+    {{ form.password.errors }}
+  </div>
+  <div class="form-group">
+    <label for="password_confirm"> Confirm Password: </label>
+    <input type="password" name="password_confirm" placeholder="password">
+    {{ form.password_confirm.errors }}
+  </div>
+  <button type="submit" class="btn btn-sm">Create</button>
 </form>
+{% endblock %}
+

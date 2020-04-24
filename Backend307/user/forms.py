@@ -26,5 +26,10 @@ class LoginForm(forms.Form):
     password = forms.CharField()
 
 
+class JoinRoomForm(forms.Form):
+    roomcode = forms.CharField()
+
+
+
 
 
