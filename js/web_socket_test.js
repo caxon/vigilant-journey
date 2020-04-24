@@ -389,10 +389,6 @@ function loadMap(){
 	// scene.add(obj.mesh);
 	// coinObjects.add(obj);
 
-	obj = new StaticBox(10,10,10,10,10,10,"blue");
-	scene.add(obj.mesh)
-	world.add(obj.body)
-
 	// window.ground = ground;
 	window.player = player;
 	// window.opponent = opponent;
