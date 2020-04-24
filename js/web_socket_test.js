@@ -474,6 +474,21 @@ function tick(){
 		'message': keyStates
 	}));
 
+	// Save the values locally
+	player1.value = JSON.stringify({
+                'x': playerLastPosition.x,
+                'y': playerLastPosition.y,
+                'z': playerLastPosition.z
+            })
+
+
+	if(typeof opponent !== "undefined") {
+		player2.value = JSON.stringify({
+			'x': opponent.body.position.x,
+			'y': opponent.body.position.y,
+			'z': opponent.body.position.z
+		})
+	}
 	/* enqueue next frame */
 	requestAnimationFrame(tick);
 
