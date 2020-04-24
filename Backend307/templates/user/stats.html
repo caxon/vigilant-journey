@@ -1,7 +1,7 @@
 {% extends "user/base2.html" %}
 {% block content2 %}
 <h1 >
-  {{ request.user.username }} Stats
+  {{ request.user.username }} Profile
 </h1>
 <div class="row">
 <div class="col-md-3">
@@ -25,7 +25,7 @@
 </div>
 <div class="hist p-3 mb-2 text-white form-rounded">
   <p class="lab"> Game History </p>
-  <p class="count">{{ request.user.password }} 20</p>
+  <p class="count">{{ request.user.password }}</p>
 </div>
 
 
