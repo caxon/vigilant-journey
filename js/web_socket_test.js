@@ -97,6 +97,7 @@ game_socket.onmessage = function(e) {
 			}
 		}
 		else {
+			opponent.body.position.set(Number(message['x']), Number(message['y']), Number(message['z']));
 			opponent.update(message);
 		}
 
@@ -423,7 +424,10 @@ function tick(){
 	renderer.render(scene, camera);
 
 	stats.end();
-
+	keyStates['x'] = playerLastPosition.x;
+	keyStates['y'] = playerLastPosition.y;
+	keyStates['z'] = playerLastPosition.z;
+	
 	game_socket.send(JSON.stringify({
 		'player': player_id,
 		'message': keyStates
