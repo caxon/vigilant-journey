@@ -30,3 +30,12 @@ The server will be run on http://127.0.0.1:8000/
 
 
 You can now just run `python mangage.py runserver` in `Backend307` folder to start the game.
+
+
+How to Set-Up (cd to Backend307 folder), then run:
+python3 manage.py makemigrations
+python3 manage.py migrate
+python3 manage.py rumserver
+
+In a separate terminal, run:
+./redis-server
