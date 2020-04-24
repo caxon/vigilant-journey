@@ -28,10 +28,10 @@ class GameLobby(models.Model):
             game_status=self.game_status,
             room_name=self.room_name,
             game_started=self.game_started,
-            users=[user.as_json for user in self.players.all()],  # players is related name(GamePlayer)
-            boxes=[box.as_json for box in self.boxes.all()],
-            coins=[coin.as_json for coin in self.coins.all()],
-            ground=[ground.as_json for ground in self.groundplane.all()]
+            users=[user.as_json() for user in self.players.all()],  # players is related name(GamePlayer)
+            boxes=[box.as_json() for box in self.boxes.all()],
+            coins=[coin.as_json() for coin in self.coins.all()],
+            ground=[ground.as_json() for ground in self.groundplane.all()]
         )
 
 
@@ -45,12 +45,12 @@ class GamePlayer(models.Model):
     z = models.FloatField(default=0)
 
 
-    user = models.ForeignKey(
-        User,
-        related_name="players",
-        on_delete=models.CASCADE,
-        default=""
-    )
+    # user = models.ForeignKey(
+    #     User,
+    #     related_name="players",
+    #     on_delete=models.CASCADE,
+    #     default=""
+    # )
 
     gamelobby = models.ForeignKey(
         GameLobby,
@@ -63,11 +63,10 @@ class GamePlayer(models.Model):
             id=self.id,
             winner=self.winner,
             score=self.score,
-            username=self.user.username,
+            # username=self.user.username,
             x=self.x,
             y=self.y,
             z=self.z,
-
         )
 
 

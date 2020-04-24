@@ -20,7 +20,11 @@ h1{
   color: white;
 }
 a {
-  color: white;
+  color: teal;
+}
+.centre { /*centres some elements*/
+  display: table; 
+  margin: auto;
 }
 #gradient{
   background: turquoise; /* For browsers that do not support gradients */

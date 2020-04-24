@@ -10,50 +10,77 @@ from django.db import IntegrityError
 from django.utils.html import escape, escapejs
 from .models import *
 import json
+from . import forms
+import random
 
 # Create your views here.
 def index(request):
     context = {}
     return render(request, '../templates/gamestate/index.html', context)
 
-
+# @login_required #enforces login (?)
 def room(request, room_id=None):
+    user = None
+    if request.user.is_authenticated:
+        user = request.user
+
+
     if request.method == 'POST':
         # player1 = escape(request.POST['player1'])
         # player2 = escape(request.POST['player2'])
-        print(request.body)
-        state = json.loads(request.body.decode("utf-8"))
-        player1 = state['player1']
-        player2 = state['player2']
 
-        player1_model = GamePlayer(
-            x=player1['x'],
-            y=player1['y'],
-            z=player1['z']
-        )
-
-        player2_model = GamePlayer(
-            x=player2['x'],
-            y=player2['y'],
-            z=player2['z']
-        )
-
-        players = {'player1': player1_model, 'player2': player2_model}
+        form = forms.GameStateForm(request.POST)
 
 
-        room_name_hash = hash(room_id+0.1)
 
-        game_state = GameLobby(
-            players=players,
-            room_name=room_name_hash
-        )
+        if form.is_valid():
+            player1 = form.cleaned_data['player1']
+            player2 = form.cleaned_data['player2']
 
-        game_state.save()
-        return render(request, '../templates/gamestate/saved.html', {
-            'room_name_hash': room_name_hash
-        })
+            player1 = json.loads(player1)
+            player2 = json.loads(player2)
+            print(player1)
+            print(player2)
+
+            # room_name_hash = hash(room_id+0.1)
+            room_name_hash = random.randint(0, 999)
+            room_name_hash = hash(room_name_hash+0.1)
+            game_state = GameLobby(
+                room_name=room_name_hash,
+            )
+
+            game_state.save()
+            player1_model = GamePlayer(
+                x=player1['x'],
+                y=player1['y'],
+                z=player1['z'],
+
+            )
+
+            player2_model = GamePlayer(
+                x=player2['x'],
+                y=player2['y'],
+                z=player2['z']
+            )
+
+            game_state.players.add(player1_model, bulk=False)
+            game_state.players.add(player2_model, bulk=False)
+
+            player1_model.save()
+            player2_model.save()
+
+            print(game_state.as_json()['users'][0])
+            return render(request, '../templates/gamestate/saved.html', game_state.as_json())
 
 
     return render(request, '../templates/gamestate/room.html', {
         'room_id': room_id
     })
+
+
+def load_game(request):
+    if request.method == 'POST':
+        room_name = request.POST['room_id']
+        print(GameLobby.objects.get(room_name=room_name).as_json())
+
+    return render(request, '../templates/gamestate/load.html', {})

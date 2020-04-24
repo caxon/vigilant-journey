@@ -1,0 +1,43 @@
+{% extends "user/base.html" %}
+{% block content %}
+{% load static %}
+
+<div class="centre">
+  <h1 >
+    Welcome to 
+  </h1>
+  <h1 style="font-weight:bold">
+    Vigilant Journey
+  </h1>
+</div>
+<br>
+
+<div class="row">
+	<div class="col-md-6">
+    <div class="centre">
+      <p>Be the first to collect the most points!</p>
+      <table class="centre" style="max-width:200px">
+        <tr>
+          <td width="33%" style="padding:0px 10px 0px 10px"><img class="centre" src="{% static 'coin.png' %}" alt="Coin" width="100%" ></td>
+          <td width="33%" style="padding:0px 10px 0px 10px"><img class="centre" src="{% static 'coin.png' %}" alt="Coin" width="100%" ></td>
+          <td width="33%" style="padding:0px 10px 0px 10px"><img class="centre" src="{% static 'coin.png' %}" alt="Coin" width="100%" ></td>
+        </tr>
+      </table>
+    </div>
+    <br>
+  </div>
+  <div class="col-md-6">
+    <div class="centre">
+      <p>Move with WASD or arrow keys</p>
+      <table class="centre" style="max-width:200px">
+        <tr>
+          <td width="50%" style="padding:0px 10px 0px 10px"><img class="centre" src="{% static 'arrowKeys.png' %}" alt="Arrow Keys" width="100%" ></td>
+          <td width="50%" style="padding:0px 10px 0px 10px"><img class="centre" src="{% static 'WASD.png' %}" alt="WASD" width="100%" ></td>
+        </tr>
+      </table>
+    </div>
+    <br>
+  </div>
+</div>
+
+{% endblock %}
