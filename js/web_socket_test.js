@@ -35,6 +35,8 @@ let controls;
 /* CANNON.js GLOBAL OBJECTS */
 /**@type {CANNON.World} */
 let world;
+let groundMat = new CANNON.Material();
+
 
 /* STATS.js GLOBAL OBJECTS */
 let stats;
@@ -83,7 +85,7 @@ game_socket.onmessage = function(e) {
 				scene.add(opponent.mesh);
 				world.add(opponent.body);
 				world.addContactMaterial(
-				new CANNON.ContactMaterial(opponent.body.material, ground.body.material,
+				new CANNON.ContactMaterial(opponent.body.material, groundMat,
 				{friction: 0.8, restitution: 0.5})
 				)
 				window.opponent = opponent;
@@ -104,7 +106,7 @@ game_socket.onmessage = function(e) {
 				scene.add(opponent.mesh);
 				world.add(opponent.body);
 				world.addContactMaterial(
-				new CANNON.ContactMaterial(opponent.body.material, ground.body.material,
+				new CANNON.ContactMaterial(opponent.body.material, groundMat,
 				{friction: 0.8, restitution: 0.5})
 				)
 				window.opponent = opponent;
@@ -350,7 +352,6 @@ let map_json = {
  * Load map
  */
 function loadMap(){
-	var groundMat = new CANNON.Material();
 
 	// scene.add(ground.mesh);
 	// console.log(ground)
@@ -556,6 +557,16 @@ async function loadModels(resource_classes_array){
 	return Promise.all( promises).then( () =>
 		console.log("ALL RESOURCES LOADED")
 	);
+}
+
+/** When another player gets a coin it removes the coin for all players. */
+function removeCoin(coin_id){
+	for (let i = 0 ; i < coinObjects.length ; i++){
+		let coin = coinObjects[i]
+		if (coin.coin_id == coin_id){
+			coin.is_dead = true;
+		}
+	}
 }
 
 
