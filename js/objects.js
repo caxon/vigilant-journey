@@ -34,10 +34,10 @@ export class StaticBox{
       colorcode = 0x3355cc;
     }
     else if (color=="red"){
-      colorcode = 0x991222;
+      colorcode = 0xafeeee;
     }
     else if (color=="green"){
-      colorcode = 0x2eb832;
+      colorcode = 0x00a0a0;
     }
     else if (color=="yellow"){
       colorcode = 0xdede1b;

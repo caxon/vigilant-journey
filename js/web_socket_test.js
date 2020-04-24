@@ -271,7 +271,7 @@ let map_json = {
 
 	],
 	coins:[
-		{x: 10, y:10, z:10, type:"gold"},
+		{x: -10, y:10, z:10, type:"gold"},
 		{x: 10, y:10, z:10, type:"gold"},
 		{x: 10, y:10, z:10, type:"gold"},
 		{x: 10, y:10, z:10, type:"gold"},
@@ -320,7 +320,7 @@ function loadMap(){
 	// )
 
 	let obj;
-	obj = new GoldCoin(10,10,10);
+	obj = new GoldCoin(-10,10,10);
 	scene.add(obj.mesh);
 	world.add(obj.collider);
 	updateObjects.push(obj);
@@ -373,6 +373,10 @@ function initThree(){
 	let ambient_light = new THREE.AmbientLight(0xffffff, 0.5);
 	scene.add(ambient_light)
 
+	// let directional_light2 = new THREE.DirectionalLight(0xaaffbb, 0.3);
+	// directional_light2.position.set(0,100,0);
+	// directional_light2.target = new THREE.Vector3(100,0,0);
+
 	directional_light = new THREE.DirectionalLight(0xffffff, 0.3);
 	directional_light.position.set(0,100,0);
 	directional_light.castShadow = true;
@@ -401,8 +405,8 @@ function initThree(){
 	var vertexShader = document.getElementById( 'vertexShader' ).textContent;
 	var fragmentShader = document.getElementById( 'fragmentShader' ).textContent;
 	var uniforms = {
-		"topColor": { value: new THREE.Color( 0x0077ff ) },
-		"bottomColor": { value: new THREE.Color( 0x222222 ) },
+		"topColor": { value: new THREE.Color( 0x87ceeb ) },
+		"bottomColor": { value: new THREE.Color( 0x4169e1 ) },
 		"offset": { value: 33 },
 		"exponent": { value: 0.6 }
 	};
@@ -495,6 +499,7 @@ function tick(){
 	/* move directional light above player to ensure shadows */
 	directional_light.position.set(player.mesh.position.x ,player.mesh.position.y+10, player.mesh.position.z);
 	directional_light.target = player.mesh;
+
 
 	/* loop through backwards to allow for dynamic deletion */
 	for (var i = updateObjects.length - 1; i >= 0; i--) {
