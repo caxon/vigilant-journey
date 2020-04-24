@@ -6,3 +6,15 @@ canvas{
 	/* border: 1px solid black; */
 	display: block;
 }
+
+.overlay_right{
+	position: absolute;
+	top: 0px;
+	right: 0px;
+}
+
+.overlay_left{
+	position: absolute;
+	top: 0px;
+	left: 0px;
+}

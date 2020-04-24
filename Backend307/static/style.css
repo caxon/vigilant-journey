@@ -1,0 +1,34 @@
+body,html {
+  height:100%;
+  width:100%;
+  margin:0;
+  font-family:Raleway, sans-serif;
+  color: white;
+}
+.content {
+  width: 90%;
+  margin: auto;
+}
+
+h1{
+  font-family:Oswald;
+}
+
+.nav{
+  display: inline;
+  padding:5px;
+  color: white;
+}
+a {
+  color: white;
+}
+.centre { /*centres some elements*/
+  display: table; 
+  margin: auto;
+}
+#gradient{
+  background: turquoise; /* For browsers that do not support gradients */
+  background: linear-gradient(to bottom right, lightskyblue, mediumspringgreen); 
+  height: 100vh;
+  width: 100vw;
+}

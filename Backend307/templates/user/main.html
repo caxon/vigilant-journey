@@ -1,0 +1,38 @@
+{% extends "user/base.html" %}
+{% block content %}
+
+<h1 >
+	Welcome to 
+</h1>
+<h1 style="font-weight:bold">
+	Vigilant Journey
+</h1>
+<div>{{ form.non_field_errors }}</div>
+<br>
+<div class="row">
+	<div class="col-md-6">
+		<form action="" method="post">
+			{% csrf_token %}
+			<div class="form-group">
+				<label for="roomcode"> Join a room </label>
+				<br>
+        <input type="text" name="roomcode" placeholder="room code">
+        {{ form.roomcode.errors }}
+        <button type="submit" class="btn btn-sm">Enter</button>
+			</div>
+		</form>
+	</div>
+	<div class="col-md-6">
+		<div class="form-group">
+			<form action="../game">
+				<label for="creategame"> Start a room </label>
+        <br>
+        <button type="submit" name="creategame" class="btn btn-sm">Start</button>
+        {{ form.creategame.errors }}
+			</form>
+		</div>
+	</div>
+</div>
+
+
+{% endblock %}

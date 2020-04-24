@@ -11,11 +11,12 @@ from .models import *
 
 
 # Create your views here.
-@login_required
+
 def info(request):
     context={}
-
-    return HttpResponse('Hello ' + request.user.username)
+    if not request.user.is_authenticated:
+        return render(request, '../templates/user/index.html', context)
+    return render(request, '../templates/user/main.html', context)
 
 
 def signup(request):
@@ -52,7 +53,7 @@ def do_login(request):
                 login(request, user)
                 if 'next' in request.GET:
                     return HttpResponseRedirect(request.GET['next'])
-                return HttpResponseRedirect(reverse('index'))
+                return HttpResponseRedirect(reverse('info'))
             else:
                 form.add_error(None, 'Unable to log in')
 
@@ -62,7 +63,7 @@ def do_login(request):
 
 def do_logout(request):
     logout(request)
-    return HttpResponseRedirect(reverse('login'))
+    return HttpResponseRedirect(reverse('index'))
 
 
 # To be called by the front end after a match finishes.
@@ -83,3 +84,18 @@ def save_match_result(request):
         return HttpResponse('Match result saved')
 
     return render(request, '../templates/user/save_result.html', context)
+
+def joinRoom(request):
+    context={}
+    if request.method == 'POST':
+        form = forms.JoinRoomForm(request.POST)
+        if form.is_valid():
+            # if (0):#needs to be fixed
+            #     # return render(request, '../templates/gamestate/room.html', {
+            #     #     'room_id': roomcode
+            #     # })
+            # else:
+                form.add_error('roomcode', 'Room unavailable')
+        else: form.add_error('roomcode', 'Error, please try again')
+        context['form'] = form
+    return render(request, '../templates/user/main.html', context)

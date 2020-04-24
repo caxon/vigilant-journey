@@ -1,18 +1,15 @@
+{% extends "user/base.html" %}
+{% block content %}
 {% load static %}
-<!DOCTYPE html>
-<html>
 
-<head>
-	<link rel="stylesheet" href="{% static 'style.css' %}">
-	<title>HELLO WORLD</title>
-</head>
-<body>
+		<div class="overlay_right">
+			<form style="margin: auto" method="post">
+			{% csrf_token %}
+			<input type="text" id="player1"/>
+			<input type="text" id="player2"/>
+			<input type="submit" value="Save" id="Save">			
+		</div>
 
-    <form style="margin: auto" method="post">
-		{% csrf_token %}
-		<input type="text" id="player1"/>
-		<input type="text" id="player2"/>
-		<input type="submit" value="Save" id="Save">
 	</form>
 
 	<script type="x-shader/x-vertex" id="vertexShader">
@@ -73,7 +70,6 @@
 
 
 	<script src="{% static 'js/web_socket_test.js' %}" type="module"></script>
-</body>
 
-</html>
 
+{% endblock %}
