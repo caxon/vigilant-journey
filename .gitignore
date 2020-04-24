@@ -5,3 +5,4 @@ Backend307/.idea
 __pycache__
 .DS_Store
 .idea/vigilant-journey.iml
+Backend307/db.sqlite3
