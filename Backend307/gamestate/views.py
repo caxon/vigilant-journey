@@ -34,7 +34,7 @@ def room(request, room_id=None):
         if form.is_valid():
             player1 = form.cleaned_data['player1']
             player2 = form.cleaned_data['player2']
-            # currentScore = form.cleaned_data['currentScore']
+            currentScore = form.cleaned_data['currentScore']
 
             player1 = json.loads(player1)
             player2 = json.loads(player2)
@@ -42,9 +42,9 @@ def room(request, room_id=None):
             print(player2)
 
             #saving highscore
-            # if currentScore>user.profile.highscore:
-            #     user.profile.highscore = currentScore
-            # user.save()
+            if int(currentScore)>int(user.profile.highscore):
+                user.profile.highscore = int(currentScore)
+            user.save()
 
             # room_name_hash = hash(room_id+0.1)
             room_name_hash = random.randint(0, 999)
