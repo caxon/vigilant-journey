@@ -175,6 +175,11 @@ function loadMap(){
 	window.ground = ground;
 	window.player = player;
 
+	let obj;
+	obj = new GoldCoin(10,10,10)
+	scene.add(obj.mesh)
+	updateObjects.add(obj)
+
 }
 
 /**

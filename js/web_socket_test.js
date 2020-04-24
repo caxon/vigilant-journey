@@ -17,6 +17,10 @@ import {
 
 import {Player} from './player.js'
 
+let map ={
+	spawn_pos : [0,10,0]
+}
+
 /* Shortcut because i'm lazy */
 let log = (x) => console.log(x);
 
@@ -33,7 +37,13 @@ let world;
 /* STATS.js GLOBAL OBJECTS */
 let stats;
 
+/* Objects which need to be updated every tick e.g. floating coins */
+let updateObjects = [];
+
 let keyStates;
+
+/* track the player with this light to provide player shadows */
+let directional_light;
 
 let player;
 let opponent;
@@ -65,7 +75,7 @@ game_socket.onmessage = function(e) {
 		if('type' in message){
 			if(message['type'] === "join"){
 				console.log("player joined!")
-				opponent = new Player(0, 10, 0);
+				opponent = new Player(...map.spawn_pos);
 				scene.add(opponent.mesh);
 				world.add(opponent.body);
 				world.addContactMaterial(
@@ -252,7 +262,7 @@ function loadMap(){
 	console.log(ground)
 	world.add(ground.body)
 
-	player = new Player(0, 10,0);
+	player = new Player(...map.spawn_pos);
 	// opponent = new Player(0, 10, 0);
 	scene.add(player.mesh);
 	world.add(player.body);
@@ -268,6 +278,12 @@ function loadMap(){
 	// 		{friction: 0.8, restitution: 0.5})
 	// )
 
+	let obj;
+	obj = new GoldCoin(10,10,10);
+	scene.add(obj.mesh)
+	updateObjects.push(obj)
+	// scene.add(obj.mesh);
+	// updateObjects.add(obj);
 
 
 	window.ground = ground;
@@ -309,8 +325,11 @@ function initThree(){
 	ADD LIGHTING
 	*/
 
-	let directional_light = new THREE.DirectionalLight(0xffffff, 0.5);
-	directional_light.position.set(0,  100, 0);
+	let ambient_light = new THREE.AmbientLight(0xffffff, 0.5);
+	scene.add(ambient_light)
+
+	directional_light = new THREE.DirectionalLight(0xffffff, 0.3);
+	directional_light.position.set(0,100,0);
 	directional_light.castShadow = true;
 	directional_light.shadow.camera.left = -20;
 	directional_light.shadow.camera.right = 20;
@@ -409,8 +428,18 @@ function tick(){
 	/* update controls */
 	controls.update();
 	if (player){
+		controls.target.copy(player.mesh.position)
 		player.update(keyStates);
 	}
+
+	/* set player forward direction */
+	let v_fwd = new THREE.Vector3(
+		player.mesh.position.x - camera.position.x,
+		player.mesh.position.y - camera.position.y,
+		player.mesh.position.z - camera.position.z
+	);
+	v_fwd.projectOnPlane(new THREE.Vector3(0,1,0));
+	player.setForwardDirection(v_fwd);
 
 	/* update camera */
 	camera.position.x += player.mesh.position.x-playerLastPosition.x;
@@ -418,6 +447,18 @@ function tick(){
 	camera.lookAt(player.mesh.position);
 
 
+	/* move directional light above player to ensure shadows */
+	directional_light.position.set(player.mesh.position.x ,player.mesh.position.y+10, player.mesh.position.z);
+	directional_light.target = player.mesh;
+	/* loop through backwards to allow for dynamic deletion */
+	for (var i = updateObjects.length - 1; i >= 0; i--) {
+		updateObjects[i].update();
+		// console.log(updateObjects[i].mesh.position)
+    if (updateObjects[i].is_dead) { 
+				updateObjects.splice(i, 1);
+				
+    }
+}
 
 	/* update renderer */
 	// updateObjects.forEach( (element) => element.update() )
@@ -447,9 +488,11 @@ function tick(){
 
 
 
+window.directional_light = directional_light;
 
-
-
+function resetFunction(){
+	player.setPosition(...map.spawn_pos)
+}
 
 
 function createCannonTestObjects(){
@@ -491,3 +534,4 @@ window.world = world;
 window.QuestionMark = QuestionMark;
 window.GoldCoin = GoldCoin;
 
+world.camera = camera;
