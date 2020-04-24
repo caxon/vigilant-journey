@@ -54,6 +54,12 @@
 
 	</script>
 	<script>
+        {% if loaded_room %}
+            var room_info = "{{loaded_room | escapejs}}";
+            let num = Math.floor(Math.random()*1000);
+            window.location.replace("../game/"+num);
+        {% endif %}
+
 		var static_url = "{% get_static_prefix %}";
 		var room_id = "{{ room_id }}"
         let player1 = document.getElementById('player1')

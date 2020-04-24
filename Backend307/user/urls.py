@@ -10,6 +10,6 @@ urlpatterns = [
     path('stats', user.views.get_stats, name='stats'),
     path('main', user.views.main, name='main'),
     path('index', user.views.index, name='index'),
-    path('load', user.views.load_game, name='load')
+    # path('load', user.views.load_game, name='load')
 ]
 
