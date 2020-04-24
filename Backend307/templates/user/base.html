@@ -10,7 +10,7 @@
 
 <body id="gradient">
     <!-- Navigation Bar -->
-    <ul style="padding-left: 0px;">
+    <ul class="navbar" style="padding-left: 0px;">
       <li class="nav" style="padding-left:0px; font-family: Oswald; font-weight:bold;"><span style="background-color: teal;"><a style="color:white;padding:5px" href={% url 'index' %}>VIGILANT JOURNEY</a></span></li>
       {% if user.is_authenticated %}
       <li class="nav"><a href={% url 'main' %}>Game</a></li>
