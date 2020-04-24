@@ -1,4 +1,5 @@
-
+{% extends "user/base2.html" %}
+{% block content2 %}
 
 {% block messages %}
     {% if loaded_room %}
@@ -11,3 +12,5 @@
     <input type="text" value="Game save ID" name="room_id">
     <input type="submit">
 </form>
+
+{% endblock %}

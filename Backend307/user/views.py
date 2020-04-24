@@ -24,6 +24,15 @@ def index(request):
 
 def main(request):
     context={}
+    if request.method == 'POST':
+        form = forms.JoinRoomForm(request.POST)
+    ################needs to be fixed
+        if form.is_valid():
+            print(roomcode)
+            roomcode=form.cleaned_data['roomcode']
+            return render(request, '../game/'+roomcode+"/", context)
+        else: form.add_error('roomcode', 'Error, please try again')
+        context['form'] = form
     return render(request, '../templates/user/main.html', context)
 
 ########## needs  to be fixed
@@ -31,7 +40,7 @@ def get_stats(request):
     context={}
     if not request.user.is_authenticated:
         return render(request, '../templates/user/index.html', context)
-    return render(request, '../templates/user/main.html', context)
+    return render(request, '../templates/user/stats.html', context)
 
 def signup(request):
     context = {}
@@ -101,13 +110,14 @@ def save_match_result(request):
 
 def joinRoom(request):
     context={}
+    print(roomcode)
     if request.method == 'POST':
         form = forms.JoinRoomForm(request.POST)
-
         ################needs to be fixed
         if form.is_valid():
-            return render(request, '../game/'+'roomcode', context)
-            # form.add_error('roomcode', 'Room unavailable')
+            roomcode=form.cleaned_data['roomcode']
+            print("validform"+roomcodes)
+            return render(request, '../room/'+roomcode, context)
         else: form.add_error('roomcode', 'Error, please try again')
         context['form'] = form
     return render(request, '../templates/user/main.html', context)

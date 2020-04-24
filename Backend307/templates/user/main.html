@@ -10,14 +10,14 @@
 <div>{{ form.non_field_errors }}</div>
 <br>
 <div class="row">
-	<div class="col-md-6">
+	<div class="col-md-4">
 		<form action="" method="post">
 			{% csrf_token %}
 			<div class="form-group">
 				<label for="roomcode"> Join a room </label>
 				<br>
 				<div class="input-group mb-3" style="max-width: 20em;">
-					<input type="text" class="form-control form-rounded" name="roomcode" placeholder="room code">
+					<input type="number" min="0" max="1000" class="form-control form-rounded" name="roomcode" placeholder="room code">
 					<div class="input-group-append">
 						<button class="btn btn-default btn-rounded" type="submit">Enter</button>
 					</div>
@@ -25,14 +25,27 @@
 				</div>
 			</div>
 		</form>
+	</div>
+	<!-- <div class="col-md-4">
+		<form action="" method="post">
+			<div class="form-group">
+				<label for="roomcode"> Join a room </label>
+				<br>
+				<div class="input-group mb-3" style="max-width: 20em;">
+					<input type="number" min="0" max="1000" class="form-control form-rounded" id="roomcode" name="roomcode" value='0' placeholder="room code">
+					<div class="input-group-append">
+						<button class="btn btn-default btn-rounded" id="joinButton" type="submit">Enter</button>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div> -->
+	<div class="col-md-4">
+		<label for="startroom"> Start a room </label> <br>
+		<button name="startroom" class="btn btn-default form-rounded" id="createGame">Create</button>
+	</div>
+	<div class="col-md-4">
 		<br>
-	</div>
-	<div class="col-md-6">
-		<label for="roomcode"> Start a room </label> <br>
-		<button name="roomcode" class="btn btn-default form-rounded" id="createGame">Enter</button>
-	</div>
-
-    <div class="col-md-6">
 		<form action="../load" method="post">
 			{% csrf_token %}
 			<div class="form-group">
@@ -55,6 +68,10 @@
 		var num = Math.floor(Math.random()*1000);
 		location.href="../game/"+num;
 	};
+	document.getElementById("joinButton").onsubmit = function(){
+		var num = document.getElementsByName('roomcode').value;
+		location.href="../game/"+num;
+	}
 </script>
 
 {% endblock %}

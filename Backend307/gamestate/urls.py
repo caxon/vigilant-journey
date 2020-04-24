@@ -10,5 +10,5 @@ urlpatterns = [
     path("<int:room_id>/", room), # Game lobby
     path("gamelist", index), # lobby list
     path("", room),
-    path("load", load_game)
+    path("load", load_game, name="load")
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
