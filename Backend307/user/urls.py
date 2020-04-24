@@ -9,6 +9,7 @@ urlpatterns = [
     path('save_result', user.views.save_match_result, name='save_result'),
     path('stats', user.views.get_stats, name='stats'),
     path('main', user.views.main, name='main'),
-    path('index', user.views.index, name='index')
+    path('index', user.views.index, name='index'),
+    path('load', user.views.load_game, name='load')
 ]
 

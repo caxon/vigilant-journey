@@ -31,8 +31,6 @@ def room(request, room_id=None):
 
         form = forms.GameStateForm(request.POST)
 
-
-
         if form.is_valid():
             player1 = form.cleaned_data['player1']
             player2 = form.cleaned_data['player2']
@@ -79,8 +77,10 @@ def room(request, room_id=None):
 
 
 def load_game(request):
+    context = {}
     if request.method == 'POST':
         room_name = request.POST['room_id']
-        print(GameLobby.objects.get(room_name=room_name).as_json())
+        room_obj = GameLobby.objects.get(room_name=room_name).as_json()
+        context['loaded_room'] = room_obj
 
-    return render(request, '../templates/gamestate/load.html', {})
+    return render(request, '../templates/gamestate/load.html', context)
