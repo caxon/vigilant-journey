@@ -15,7 +15,6 @@ from .models import *
 def info(request):
     context={}
 
-
     return HttpResponse('Hello ' + request.user.username)
 
 

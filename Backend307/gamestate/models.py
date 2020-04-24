@@ -31,7 +31,7 @@ class GameLobby(models.Model):
             users=[user.as_json for user in self.players.all()],  # players is related name(GamePlayer)
             boxes=[box.as_json for box in self.boxes.all()],
             coins=[coin.as_json for coin in self.coins.all()],
-            ground=self.groundplane.all()[0]
+            ground=[ground.as_json for ground in self.groundplane.all()]
         )
 
 

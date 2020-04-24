@@ -7,12 +7,13 @@
 	<title>HELLO WORLD</title>
 </head>
 <body>
-	<!--<form action="" method="post">-->
-		<!--{% csrf_token%}-->
 
-		<!--<input type="submit" value="Save"/>-->
-	<!--</form>-->
-
+    <form style="margin: auto" method="post">
+		{% csrf_token %}
+		<input type="text" id="player1"/>
+		<input type="text" id="player2"/>
+		<input type="submit" value="Save" id="Save">
+	</form>
 
 	<script type="x-shader/x-vertex" id="vertexShader">
 
@@ -49,9 +50,24 @@
 	<script>
 		var static_url = "{% get_static_prefix %}";
 		var room_id = "{{ room_id }}"
+        let player1 = document.getElementById('player1')
+        let player2 = document.getElementById('player2')
 
+            player1.value = JSON.stringify({
+                'x': 0,
+                'y': 0,
+                'z': 0
+            })
+
+            player2.value = JSON.stringify({
+                'x': 0,
+                'y': 0,
+                'z': 0
+            })
 
 	</script>
+
+
 
 
 

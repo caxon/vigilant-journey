@@ -8,7 +8,6 @@ class GameConsumer(WebsocketConsumer):
     last_tick_time = time.time()
 
     def connect(self):
-
         self.room_id = self.scope['url_route']['kwargs']['room_id']
         self.room_group_name = 'game_%s' % self.room_id
 
@@ -27,8 +26,6 @@ class GameConsumer(WebsocketConsumer):
             )
 
         self.accept()
-
-
 
 
     def disconnect(self, close_code):
@@ -90,7 +87,6 @@ class GameConsumer(WebsocketConsumer):
             }
         )
 
-
     def update_game(self, event):
         message = event['message']
         player = event['player']
@@ -100,7 +96,6 @@ class GameConsumer(WebsocketConsumer):
             'player': player
         }))
 
-
     def join_game(self, event):
         message = event['message']
 
@@ -108,6 +103,14 @@ class GameConsumer(WebsocketConsumer):
             'message': message,
             'player': event['player']
         }))
+
+    def save_game(self, event):
+        
+
+        self.end_game(event)
+
+    def end_game(self, event):
+        pass
 
 
 
