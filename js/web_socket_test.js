@@ -267,7 +267,26 @@ let map_json = {
 		},
 		{
 			x:80,y:-5,z:160, width:40,height:10,depth:40,color:"red",
-		}
+		}, /* */
+		{
+			x:20,y:15,z:180, width:30,height:10,depth:30,color:"green",
+		},
+		{
+			x:15,y:25,z:220, width:30,height:10,depth:30,color:"blue",
+		},
+		{
+			x:60,y:35,z:250, width:30,height:10,depth:30,color:"yellow",
+		},
+		{
+			x:100,y:50,z:260, width:30,height:10,depth:30,color:"purple",
+		},
+		{
+			x:140,y:60,z:240, width:30,height:10,depth:30,color:"orange",
+		},
+		{
+			x:140,y:70,z:190, width:30,height:10,depth:30,color:"blue",
+		},
+
 
 	],
 	coins:[
@@ -327,9 +346,9 @@ function loadMap(){
 	// scene.add(obj.mesh);
 	// updateObjects.add(obj);
 
-	obj = new StaticBox(10,10,10,10,10,10,"blue");
-	scene.add(obj.mesh)
-	world.add(obj.body)
+	// obj = new StaticBox(10,10,10,10,10,10,"blue");
+	// scene.add(obj.mesh)
+	// world.add(obj.body)
 
 	// window.ground = ground;
 	window.player = player;
@@ -464,6 +483,9 @@ function tick(){
 		z: player.mesh.position.z
 	};
 
+	/* update score */
+	let score_element = document.getElementById('score');
+	score_element.innerHTML = palyer.score;
 
 	// log(keyStates);
 
