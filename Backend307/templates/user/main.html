@@ -1,5 +1,5 @@
-{% extends "user/base.html" %}
-{% block content %}
+{% extends "user/base2.html" %}
+{% block content2 %}
 
 <h1 >
 	Welcome to 
@@ -25,18 +25,36 @@
 				</div>
 			</div>
 		</form>
+		<br>
 	</div>
 	<div class="col-md-6">
-		<div class="form-group">
-			<form action="../game">
-				<label for="creategame"> Start a room </label>
-        <br>
-        <button type="submit" name="creategame" class="btn btn-default form-rounded">Start</button>
-        {{ form.creategame.errors }}
-			</form>
-		</div>
+		<label for="roomcode"> Start a room </label> <br>
+		<button name="roomcode" class="btn btn-default form-rounded" id="createGame">Enter</button>
+	</div>
+
+    <div class="col-md-6">
+		<form action="../load" method="post">
+			{% csrf_token %}
+			<div class="form-group">
+				<label for="room_id"> Load a game </label>
+				<br>
+				<div class="input-group mb-3" style="max-width: 20em;">
+					<input type="text" class="form-control form-rounded" name="room_id" placeholder="game code">
+					<div class="input-group-append">
+						<button class="btn btn-default btn-rounded" type="submit">Enter</button>
+					</div>
+				</div>
+			</div>
+		</form>
+		<br>
 	</div>
 </div>
 
+<script>
+	document.getElementById("createGame").onclick = function(){
+		var num = Math.floor(Math.random()*1000);
+		location.href="../game/"+num;
+	};
+</script>
 
 {% endblock %}

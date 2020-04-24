@@ -8,7 +8,7 @@ from django.db import IntegrityError
 from django.utils.html import escape
 from . import forms
 from .models import *
-
+from gamestate.models import *
 
 # Create your views here.
 
@@ -103,14 +103,25 @@ def joinRoom(request):
     context={}
     if request.method == 'POST':
         form = forms.JoinRoomForm(request.POST)
+
         ################needs to be fixed
         if form.is_valid():
-            # if (0):
-            #     # return render(request, '../templates/gamestate/room.html', {
-            #     #     'room_id': roomcode
-            #     # })
-            # else:
-                form.add_error('roomcode', 'Room unavailable')
+            return render(request, '../game/'+'roomcode', context)
+            # form.add_error('roomcode', 'Room unavailable')
         else: form.add_error('roomcode', 'Error, please try again')
         context['form'] = form
     return render(request, '../templates/user/main.html', context)
+
+
+def load_game(request):
+    context = {}
+    if request.method == 'POST':
+        room_name = request.POST['room_id']
+        try:
+            room_obj = GameLobby.objects.get(room_name=room_name).as_json()
+            context['loaded_room'] = room_obj
+        except:
+            context['loaded_room'] = "Lobby not found"
+        # print(GameLobby.objects.get(room_name=room_name).as_json())
+
+    return render(request, '../templates/gamestate/load.html', context)
