@@ -8,7 +8,8 @@ urlpatterns = [
     path('login', user.views.do_login, name='login'),
     path('logout', user.views.do_logout, name='logout'),
     path('save_result', user.views.save_match_result, name='save_result'),
+    path('stats', user.views.get_stats, name='stats'),
     # path(r'^.*/$', user.views.info, name='info'),
-    # path('main', user.views.joinRoom, name='main')
+    path('main', user.views.index, name='main')
 ]
 
