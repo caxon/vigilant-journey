@@ -16,9 +16,13 @@
 			<div class="form-group">
 				<label for="roomcode"> Join a room </label>
 				<br>
-        <input type="text" name="roomcode" placeholder="room code">
-        {{ form.roomcode.errors }}
-        <button type="submit" class="btn btn-sm">Enter</button>
+				<div class="input-group mb-3" style="max-width: 20em;">
+					<input type="text" class="form-control form-rounded" name="roomcode" placeholder="room code">
+					<div class="input-group-append">
+						<button class="btn btn-default btn-rounded" type="submit">Enter</button>
+					</div>
+					{{ form.roomcode.errors }}
+				</div>
 			</div>
 		</form>
 	</div>
@@ -27,7 +31,7 @@
 			<form action="../game">
 				<label for="creategame"> Start a room </label>
         <br>
-        <button type="submit" name="creategame" class="btn btn-sm">Start</button>
+        <button type="submit" name="creategame" class="btn btn-default form-rounded">Start</button>
         {{ form.creategame.errors }}
 			</form>
 		</div>

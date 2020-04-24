@@ -22,6 +22,10 @@ def index(request):
     context={}
     return render(request, '../templates/user/index.html', context)
 
+def main(request):
+    context={}
+    return render(request, '../templates/user/main.html', context)
+
 ########## needs  to be fixed
 def get_stats(request):
     context={}
