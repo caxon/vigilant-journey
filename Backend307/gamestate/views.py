@@ -86,7 +86,13 @@ def load_game(request):
     context = {}
     if request.method == 'POST':
         room_name = request.POST['room_id']
-        room_obj = GameLobby.objects.get(room_name=room_name).as_json()
-        context['loaded_room'] = room_obj
+        try:
+            room_obj = GameLobby.objects.get(room_name=room_name).as_json()
+            print(room_obj)
+            context['loaded_room'] = room_obj
+            return render(request, '../templates/gamestate/room.html', context)
+        except:
+            print("lobby not found")
+        # print(GameLobby.objects.get(room_name=room_name).as_json())
 
-    return render(request, '../templates/gamestate/load.html', context)
+    return render(request, '../templates/user/main.html', context)
