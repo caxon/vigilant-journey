@@ -40,6 +40,10 @@ def room(request, room_id=None):
             print(player1)
             print(player2)
 
+            # #saving highscore
+            # user.profile.score = 10
+            # user.save()
+
             # room_name_hash = hash(room_id+0.1)
             room_name_hash = random.randint(0, 999)
             room_name_hash = hash(room_name_hash+0.1)
