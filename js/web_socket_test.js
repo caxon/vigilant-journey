@@ -572,6 +572,8 @@ function handleClientPlayerCollision(e){
 			let coin = e.body.userData.ref;
 			player.score += coin.value;
 			coin.is_dead = true;
+
+			// TODO: Send a message to consumer
 		}
 }
 
