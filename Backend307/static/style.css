@@ -22,6 +22,10 @@ h1{
 a {
   color: white;
 }
+.centre { /*centres some elements*/
+  display: table; 
+  margin: auto;
+}
 #gradient{
   background: turquoise; /* For browsers that do not support gradients */
   background: linear-gradient(to bottom right, lightskyblue, mediumspringgreen); 

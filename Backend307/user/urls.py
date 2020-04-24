@@ -2,11 +2,13 @@ from django.urls import path
 import user.views
 
 urlpatterns = [
-    path('', user.views.info, name='index'),
+    path('', user.views.info, name='info'),
+    path('index', user.views.info, name='index'),
     path('signup', user.views.signup, name='signup'),
     path('login', user.views.do_login, name='login'),
     path('logout', user.views.do_logout, name='logout'),
     path('save_result', user.views.save_match_result, name='save_result'),
-    path('main', user.views.joinRoom, name='main')
+    # path(r'^.*/$', user.views.info, name='info'),
+    # path('main', user.views.joinRoom, name='main')
 ]
 

@@ -11,10 +11,11 @@ from .models import *
 
 
 # Create your views here.
-@login_required
+
 def info(request):
     context={}
-
+    if not request.user.is_authenticated:
+        return render(request, '../templates/user/index.html', context)
     return render(request, '../templates/user/main.html', context)
 
 
@@ -52,7 +53,7 @@ def do_login(request):
                 login(request, user)
                 if 'next' in request.GET:
                     return HttpResponseRedirect(request.GET['next'])
-                return HttpResponseRedirect(reverse('index'))
+                return HttpResponseRedirect(reverse('info'))
             else:
                 form.add_error(None, 'Unable to log in')
 
@@ -62,7 +63,7 @@ def do_login(request):
 
 def do_logout(request):
     logout(request)
-    return HttpResponseRedirect(reverse('login'))
+    return HttpResponseRedirect(reverse('index'))
 
 
 # To be called by the front end after a match finishes.
@@ -90,9 +91,9 @@ def joinRoom(request):
         form = forms.JoinRoomForm(request.POST)
         if form.is_valid():
             if (0):#needs to be fixed
-                return render(request, '../templates/gamestate/room.html', {
-                    'room_id': 'roomcode'
-                })
+                # return render(request, '../templates/gamestate/room.html', {
+                #     'room_id': roomcode
+                # })
             else:
                 form.add_error('roomcode', 'Room unavailable')
         else: form.add_error('roomcode', 'Error, please try again')

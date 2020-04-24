@@ -16,7 +16,7 @@ def index(request):
     context = {}
     return render(request, '../templates/gamestate/index.html', context)
 
-
+@login_required #enforces login (?)
 def room(request, room_id=None):
     if request.method == 'POST':
         # player1 = escape(request.POST['player1'])
