@@ -115,6 +115,8 @@ game_socket.onmessage = function(e) {
 		else {
 			opponent.body.position.set(Number(message['x']), Number(message['y']), Number(message['z']));
 			opponent.update(message);
+			coinObjects = JSON.parse(message['coin'])
+			console.log(coinObjects)
 		}
 
 	}
@@ -629,6 +631,7 @@ function tick(){
 				world.removeBody(coinObjects[i].collider)
 				scene.remove(coinObjects[i].mesh)
     }
+
 }
 
 	/* update renderer */
@@ -636,9 +639,22 @@ function tick(){
 	renderer.render(scene, camera);
 
 	stats.end();
+
+	for (var i = coinObjects.length - 1; i >= 0; i--) {
+		coinObjects[i].update();
+		// console.log(coinObjects[i].mesh.position)
+    if (coinObjects[i].is_dead) {
+				world.removeBody(coinObjects[i].collider)
+				scene.remove(coinObjects[i].mesh)
+    	}
+	}
+
 	keyStates['x'] = playerLastPosition.x;
 	keyStates['y'] = playerLastPosition.y;
 	keyStates['z'] = playerLastPosition.z;
+	keyStates['coin'] = coinObjects;
+
+
 	
 	game_socket.send(JSON.stringify({
 		'player': player_id,
