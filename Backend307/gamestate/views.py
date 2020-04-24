@@ -17,7 +17,7 @@ def index(request):
     context = {}
     return render(request, '../templates/gamestate/index.html', context)
 
-@login_required #enforces login (?)
+# @login_required #enforces login (?)
 def room(request, room_id=None):
     user = None
     if request.user.is_authenticated:
@@ -45,8 +45,8 @@ def room(request, room_id=None):
             game_state = GameLobby(
                 room_name=room_name_hash,
             )
-            game_state.save()
 
+            game_state.save()
             player1_model = GamePlayer(
                 x=player1['x'],
                 y=player1['y'],
@@ -60,16 +60,14 @@ def room(request, room_id=None):
                 z=player2['z']
             )
 
-            user.players.add(player1_model, bulk = False)
-            user.players.add(player2_model, bulk=False)
             game_state.players.add(player1_model, bulk=False)
             game_state.players.add(player2_model, bulk=False)
-            # player1_model.save()
-            # player2_model.save()
 
-            return render(request, '../templates/gamestate/saved.html', {
-                'room_name_hash': room_name_hash
-            })
+            player1_model.save()
+            player2_model.save()
+
+            print(game_state.as_json()['users'][0])
+            return render(request, '../templates/gamestate/saved.html', game_state.as_json())
 
 
     return render(request, '../templates/gamestate/room.html', {
