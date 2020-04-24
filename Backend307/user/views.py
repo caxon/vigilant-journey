@@ -18,6 +18,16 @@ def info(request):
         return render(request, '../templates/user/index.html', context)
     return render(request, '../templates/user/main.html', context)
 
+def index(request):
+    context={}
+    return render(request, '../templates/user/index.html', context)
+
+########## needs  to be fixed
+def get_stats(request):
+    context={}
+    if not request.user.is_authenticated:
+        return render(request, '../templates/user/index.html', context)
+    return render(request, '../templates/user/main.html', context)
 
 def signup(request):
     context = {}
@@ -89,8 +99,9 @@ def joinRoom(request):
     context={}
     if request.method == 'POST':
         form = forms.JoinRoomForm(request.POST)
+        ################needs to be fixed
         if form.is_valid():
-            # if (0):#needs to be fixed
+            # if (0):
             #     # return render(request, '../templates/gamestate/room.html', {
             #     #     'room_id': roomcode
             #     # })
