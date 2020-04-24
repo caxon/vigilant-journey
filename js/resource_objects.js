@@ -6,7 +6,7 @@ let loader = new GLTFLoader();
 
 console.log("Module {objects.js} Loaded");
 
-var static_url = "../";
+// var static_url = "../";
 
 
 /** Generic resource object for loading from gltf/glb files */
@@ -16,7 +16,9 @@ class ResourceObject{
 		if (this.prototypeMesh === null){
 			console.error("Must load the mesh via loadResources before using ResourceObject's")
 		}
-		this.mesh = this.prototypeMesh.clone();
+		console.log("ptm",this.prototypeMesh)
+		console.log(this)
+		this.mesh = this.constructor.prototypeMesh.clone();
 		this.mesh.position.set(x,y,z);
 	}
 
@@ -25,6 +27,8 @@ class ResourceObject{
 	/** @type {THREE.Mesh} The static mesh*/
 	static prototypeMesh = null;
 	static debug_name = "DEBUG NAME NOT DEFINED"
+
+	static did_load = false;
 
 	/**
 	 * Load resorces specified in Class.path static variable.
@@ -45,6 +49,7 @@ class ResourceObject{
 			function (gltf) {
 				this.prototypeMesh = gltf.scene;
 				this.processResource();
+				this.did_load = true;
 				// console.log(`Resource for ${this.debug_name} was loaded!`)
 				resolve();
 			}.bind(this),
@@ -81,7 +86,7 @@ export class GoldCoin extends ResourceObject{
 		if (this.rotation > 2*Math.PI){
 			this.rotation %= 2*Math.PI;
 		}
-		this.mesh.rotation.z = this.rotation;
+		this.mesh.rotation.y = this.rotation;
 	}
 }
 

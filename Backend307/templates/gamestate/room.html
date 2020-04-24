@@ -8,11 +8,14 @@
 </head>
 <body>
 
-    <form style="margin: auto" method="post">
-		{% csrf_token %}
-		<input type="text" id="player1"/>
-		<input type="text" id="player2"/>
-		<input type="submit" value="Save" id="Save">
+		<div class="overlay_right">
+			<form style="margin: auto" method="post">
+			{% csrf_token %}
+			<input type="text" id="player1"/>
+			<input type="text" id="player2"/>
+			<input type="submit" value="Save" id="Save">			
+		</div>
+
 	</form>
 
 	<script type="x-shader/x-vertex" id="vertexShader">
