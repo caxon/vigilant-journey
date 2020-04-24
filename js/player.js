@@ -9,6 +9,13 @@ export class Player{
     this.z = z;
     
     this.speed = 0.5;
+    this.max_speed = 13;
+    
+    this.score = 0;
+
+
+    this.max_jumps = 2;
+    this.jumps_remaining = this.max_jumps;
 		
 		let geo = new THREE.BoxGeometry(1,1,1 );
 		let mat = new THREE.MeshStandardMaterial(0xff00ff);
@@ -22,6 +29,7 @@ export class Player{
       material: contact_mat,
 		})
     this.body.position.set(x,y,z);
+    this.body.userData = {global_id: -1, type:"player", ref:this}
     
     this.forwardDirection = new THREE.Vector3(1,0,0);
   }
@@ -73,7 +81,10 @@ export class Player{
   
     if (keyStates['Space'] ){
       console.log("JUMP!")
-      this.body.velocity.y = 8;
+      if (this.jumps_remaining > 0){
+        this.body.velocity.y = 16;
+        this.jumps_remaining -= 1;
+      }
       keyStates['Space'] =false;
     }
     if (keyStates['Control'] ){
@@ -82,6 +93,15 @@ export class Player{
       keyStates['Control'] =false;
     }
   
+    /* slowly reduce velocity and rotation. also cap at max speed*/
+    this.body.velocity.x *= 0.995;
+    this.body.velocity.x = Math.min(this.body.velocity.x, this.max_speed);
+    // this.body.velocity.y *= 0.99;
+    this.body.velocity.z *= 0.995;
+    this.body.velocity.z = Math.min(this.body.velocity.z, this.max_speed);
+    this.body.quaternion.x *= 0.99;
+    this.body.quaternion.x *= 0.99;
+    this.body.quaternion.x *= 0.99;
     // console.log(keyStates)
   }
 

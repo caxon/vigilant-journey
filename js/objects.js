@@ -22,8 +22,62 @@ export class GroundPlane{
     });
     groundBody.quaternion.setFromAxisAngle(new CANNON.Vec3(1,0,0), -Math.PI/2);
 
-
     this.body = groundBody;
+    this.body.userData = {global_id:-1, type:"ground", ref:this}
+  }
+}
+
+export class StaticBox{
+  constructor( x, y, z, width, height, depth, color="blue"){
+    let colorcode  = 0x606060
+    if (color =="blue"){
+      colorcode = 0x3355cc;
+    }
+    else if (color=="red"){
+      colorcode = 0x991222;
+    }
+    else if (color=="green"){
+      colorcode = 0x2eb832;
+    }
+    else if (color=="yellow"){
+      colorcode = 0xdede1b;
+    }
+    else if (color=="orange"){
+      colorcode = 0xa87332;
+    }
+    else if (color=="purple"){
+      colorcode = 0x481da3;
+    }
+
+
+    /* three js */
+    let geo = new THREE.BoxGeometry(width, height, depth);
+		let mat = new THREE.MeshStandardMaterial(
+			{color: colorcode});
+    geo.translate(x, y, z);
+
+    this.mesh = new THREE.Mesh(geo, mat);	
+    this.mesh.receiveShadow= true;	
+
+    // let contact_mat = new CANNON.Material();
+		// this.body = new CANNON.Body({
+		// 	mass: 5,
+    //   shape: new CANNON.Sphere(1),
+    //   material: contact_mat,
+		// })
+    // this.body.position.set(x,y,z);
+    // this.body.userData = {global_id: -1, type:"player", ref:this}
+
+    let body = new CANNON.Body({
+      mass: 0,
+      shape: new CANNON.Box(new CANNON.Vec3(width/2, height/2, depth/2)),
+      position: new CANNON.Vec3(x,y,z)
+    })
+
+    // body.position.set(new CANNON.Vec3(x,y,z))
+    body.userData = {global_id:-1, type:"ground", ref:this}
+    this.body =body;
+
   }
 }
 
@@ -39,11 +93,13 @@ export class Box{
     let geo = new THREE.BoxGeometry(wdith, height, depth);
     let mat = new THREE.MeshNormalMaterial();
     geo.translate(x, y, z);
-    this.mesh = THREE.mesh(geo, mat);
+    this.mesh = THREE.Mesh(geo, mat);
     
     let body = new CANNON.Body({
       mass: 3,
-      shape: new CANNON.Box(new CANNON.Vec3(width, height, depth)),
+      shape: new CANNON.Box(
+        new CANNON.Vec3(1,1,1)
+        ),
       position: new CANNON.Vec3(x,y,z)
     })
 
