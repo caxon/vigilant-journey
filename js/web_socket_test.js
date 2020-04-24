@@ -13,6 +13,7 @@ import {
 import {
 	Box,
 	GroundPlane,
+	StaticBox,
 } from './objects.js';
 
 import {Player} from './player.js'
@@ -252,17 +253,57 @@ function initKeyboard(){
 }
 
 
+let map_json = {
+	blocks:[
+		{ x:0,y:-5,z:0, width:50,height:10,depth:50,color:"red"},
+		{
+			x:60,y:-5,z:30, width:20,height:10,depth:50,color:"red",
+		},
+		{
+			x:120,y:-5,z:20, width:80,height:10,depth:20,color:"red",
+		},
+		{
+			x:160,y:-5,z:100, width:30,height:10,depth:100,color:"red",
+		},
+		{
+			x:80,y:-5,z:160, width:40,height:10,depth:40,color:"red",
+		}
+
+	],
+	coins:[
+		{x: 10, y:10, z:10, type:"gold"},
+		{x: 10, y:10, z:10, type:"gold"},
+		{x: 10, y:10, z:10, type:"gold"},
+		{x: 10, y:10, z:10, type:"gold"},
+
+	],
+	spawn_location : [0,10,0]
+}
+
 
 /**
  * Load map
  */
 function loadMap(){
-	let ground = new GroundPlane(0);
-	scene.add(ground.mesh);
-	console.log(ground)
-	world.add(ground.body)
+	var groundMat = new CANNON.Material();
+
+	// scene.add(ground.mesh);
+	// console.log(ground)
+	// world.add(ground.body)
 
 	player = new Player(...map.spawn_pos);
+
+	for (let i = 0 ; i < map_json.blocks.length; i++){
+		let info = map_json.blocks[i];
+		let block = new StaticBox(
+			info.x, info.y, info.z, info.width, info.height, info.depth, info.color)
+		scene.add(block.mesh);
+		world.add(block.body); 
+		block.body.material= groundMat;
+	}
+
+	/* collision events between the player and an object */
+	player.body.addEventListener("collide", handleClientPlayerCollision)
 	// opponent = new Player(0, 10, 0);
 	scene.add(player.mesh);
 	world.add(player.body);
@@ -270,7 +311,7 @@ function loadMap(){
 	// world.add(opponent.body);
 
 	world.addContactMaterial(
-		new CANNON.ContactMaterial(player.body.material, ground.body.material,
+		new CANNON.ContactMaterial(player.body.material, groundMat,
 			{friction: 0.8, restitution: 0.5})
 	)
 	// world.addContactMaterial(
@@ -280,13 +321,17 @@ function loadMap(){
 
 	let obj;
 	obj = new GoldCoin(10,10,10);
-	scene.add(obj.mesh)
-	updateObjects.push(obj)
+	scene.add(obj.mesh);
+	world.add(obj.collider);
+	updateObjects.push(obj);
 	// scene.add(obj.mesh);
 	// updateObjects.add(obj);
 
+	obj = new StaticBox(10,10,10,10,10,10,"blue");
+	scene.add(obj.mesh)
+	world.add(obj.body)
 
-	window.ground = ground;
+	// window.ground = ground;
 	window.player = player;
 	// window.opponent = opponent;
 }
@@ -450,13 +495,14 @@ function tick(){
 	/* move directional light above player to ensure shadows */
 	directional_light.position.set(player.mesh.position.x ,player.mesh.position.y+10, player.mesh.position.z);
 	directional_light.target = player.mesh;
+
 	/* loop through backwards to allow for dynamic deletion */
 	for (var i = updateObjects.length - 1; i >= 0; i--) {
 		updateObjects[i].update();
 		// console.log(updateObjects[i].mesh.position)
     if (updateObjects[i].is_dead) { 
-				updateObjects.splice(i, 1);
-				
+				// world.remove(updateObjects[i].body)
+				scene.remove(updateObjects[i].mesh)
     }
 }
 
@@ -495,6 +541,18 @@ function tick(){
 }
 
 
+function handleClientPlayerCollision(e){
+		if (e.body.userData.type == "ground"){
+			player.jumps_remaining = player.max_jumps;
+		}
+		if (e.body.userData.type == "coin"){
+			console.log("hit a coin!")
+			let coin = e.body.userData.ref;
+			player.score += coin.value;
+			coin.is_dead = true;
+		}
+}
+
 // window.addEventListener("keydown", (/** @type {KeyboardEvent} */event) => {
 // 	if (event.code == 'Space'){
 // 		obj_cannon.velocity.y = 5
@@ -505,42 +563,49 @@ function tick(){
 
 window.directional_light = directional_light;
 
+/* reset the player and camera positions in case they get stuck */
 function resetFunction(){
 	player.setPosition(...map.spawn_pos)
+	camera.position.z = 20;
+	camera.position.y = 20;
+	camera.position.x = 0;
 }
 
+function loadMapFromJSON(){
 
-function createCannonTestObjects(){
-
-	/* Sphere object */
-	var radius = 1;
-	var mat1 = new CANNON.Material();
-	var sphereBody = new CANNON.Body({
-		mass: 5,
-		position: new CANNON.Vec3(0, 10, 0),
-		shape: new CANNON.Sphere(radius),
-		material: mat1,
-	});
-	cannon_world.addBody(sphereBody);
-
-	/* Ground plane */
-	var groundMat = new CANNON.Material();
-	var groundBody = new CANNON.Body({
-		mass:0,
-		material: groundMat,
-	});
-	groundBody.quaternion.setFromAxisAngle(new CANNON.Vec3(1,0,0), -Math.PI/2);
-
-	var groundShape = new CANNON.Plane();
-	groundBody.addShape(groundShape);
-	cannon_world.addBody(groundBody);
-	cannon_world.addContactMaterial(
-		new CANNON.ContactMaterial(groundMat, mat1,
-			{friction: 0.0, restitution: 0.5})
-	)
-
-	obj_cannon = sphereBody;
 }
+
+// function createCannonTestObjects(){
+
+// 	/* Sphere object */
+// 	var radius = 1;
+// 	var mat1 = new CANNON.Material();
+// 	var sphereBody = new CANNON.Body({
+// 		mass: 5,
+// 		position: new CANNON.Vec3(0, 10, 0),
+// 		shape: new CANNON.Sphere(radius),
+// 		material: mat1,
+// 	});
+// 	cannon_world.addBody(sphereBody);
+
+// 	/* Ground plane */
+// 	var groundMat = new CANNON.Material();
+// 	var groundBody = new CANNON.Body({
+// 		mass:0,
+// 		material: groundMat,
+// 	});
+// 	groundBody.quaternion.setFromAxisAngle(new CANNON.Vec3(1,0,0), -Math.PI/2);
+
+// 	var groundShape = new CANNON.Plane();
+// 	groundBody.addShape(groundShape);
+// 	cannon_world.addBody(groundBody);
+// 	cannon_world.addContactMaterial(
+// 		new CANNON.ContactMaterial(groundMat, mat1,
+// 			{friction: 0.0, restitution: 0.5})
+// 	)
+
+// 	obj_cannon = sphereBody;
+// }
 
 
 // Debug: expose variable to the window for debugging:

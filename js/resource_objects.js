@@ -20,6 +20,8 @@ class ResourceObject{
 		console.log(this)
 		this.mesh = this.constructor.prototypeMesh.clone();
 		this.mesh.position.set(x,y,z);
+		this.global_id = this.constructor.object_id_count;
+		this.constructor.object_id_count ++;
 	}
 
 	/** @type {string} Specify the path for eachc subclass */
@@ -28,7 +30,7 @@ class ResourceObject{
 	static prototypeMesh = null;
 	static debug_name = "DEBUG NAME NOT DEFINED"
 
-	static did_load = false;
+	static object_id  = 0;
 
 	/**
 	 * Load resorces specified in Class.path static variable.
@@ -75,11 +77,19 @@ class ResourceObject{
 export class GoldCoin extends ResourceObject{
 
 	static path = static_url + 'models/gold_coin_3.glb';
-	static debug_name = "Gold Coin"
+	static debug_name = "Gold Coin";
 
+	static value =5;
 	constructor(x,y,z){
 		super(x,y,z);
 		this.rotation = 0;
+		this.collider = new CANNON.Body({mass:0});
+		this.collider.addShape(new CANNON.Sphere(1.5));
+		this.collider.position.set(x,y,z);
+		this.collider.userData= {global_id: this.global_id, type:"coin", ref:this}
+
+		this.mesh.children[2].castShadow= true;
+		this.value = this.constructor.value;
 	}
 	update(){
 		this.rotation += 0.02;

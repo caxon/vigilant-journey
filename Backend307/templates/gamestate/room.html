@@ -2,6 +2,14 @@
 {% block content %}
 {% load static %}
 
+<<<<<<< HEAD
+		<div style="position:absolute">
+			<form style="" method="post">
+			{% csrf_token %}
+			<input type="text" id="player1"/>
+			<input type="text" id="player2"/>
+			<input type="submit" value="Save" id="Save">			
+=======
 		<div class="overlay_right">
 			<form style="margin: auto" method="post">
 			    {% csrf_token %}
@@ -9,6 +17,7 @@
 		        <input type="text" id="player2" name="player2"/>
 		        <input type="submit" value="Save" id="Save">
             </form>
+>>>>>>> 8db362242d726533a07531112d47587bb44e3062
 		</div>
 
 
