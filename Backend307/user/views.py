@@ -90,11 +90,11 @@ def joinRoom(request):
     if request.method == 'POST':
         form = forms.JoinRoomForm(request.POST)
         if form.is_valid():
-            if (0):#needs to be fixed
-                # return render(request, '../templates/gamestate/room.html', {
-                #     'room_id': roomcode
-                # })
-            else:
+            # if (0):#needs to be fixed
+            #     # return render(request, '../templates/gamestate/room.html', {
+            #     #     'room_id': roomcode
+            #     # })
+            # else:
                 form.add_error('roomcode', 'Room unavailable')
         else: form.add_error('roomcode', 'Error, please try again')
         context['form'] = form
