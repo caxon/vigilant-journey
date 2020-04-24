@@ -36,7 +36,8 @@ let stats;
 let keyStates;
 
 let player;
-
+let opponent;
+let player_id;
 /**
  * Websocket
  */
@@ -57,9 +58,67 @@ var message = {
 game_socket.onmessage = function(e) {
 	var data = JSON.parse(e.data);
 	message = data['message'];
+
+
+	// process the msg only if the sender isn't itself
+	if(player_id !== data['player']){
+		if('type' in message){
+			if(message['type'] === "join"){
+				console.log("player joined!")
+				opponent = new Player(0, 10, 0);
+				scene.add(opponent.mesh);
+				world.add(opponent.body);
+				world.addContactMaterial(
+				new CANNON.ContactMaterial(opponent.body.material, ground.body.material,
+				{friction: 0.8, restitution: 0.5})
+				)
+				window.opponent = opponent;
+
+				game_socket.send(JSON.stringify({
+					'message': {
+						'type': "add_player",
+						'x': player.x,
+						'y': player.y,
+						'z': player.z
+					},
+					'player': player_id,
+				}))
+			}
+			else if(message['type'] === 'add_player'){
+				console.log(message)
+				opponent = new Player(Number(message['x']), Number(message['y']), Number(message['z']));
+				scene.add(opponent.mesh);
+				world.add(opponent.body);
+				world.addContactMaterial(
+				new CANNON.ContactMaterial(opponent.body.material, ground.body.material,
+				{friction: 0.8, restitution: 0.5})
+				)
+				window.opponent = opponent;
+			}
+		}
+		else {
+			opponent.update(message);
+		}
+
+	}
+
 	// console.log(message + '\n');
 };
 
+
+
+
+// var update_tick = setInterval(send_update, 1);
+//
+// function send_update(){
+// 	if(typeof player_id == "undefined"){
+// 		return;
+// 	}
+// 	game_socket.send(JSON.stringify({
+// 		'player': player_id,
+// 		'message': keyStates
+// 	}));
+// }
 
 /**
  * Run all initialization code in the correct order.
@@ -90,6 +149,9 @@ async function init(){
 
 	log("START GAME")
 
+	player_id = Math.random();
+	let join_msg = {'message': {'type': "join"}, 'player': player_id};
+	game_socket.send(JSON.stringify(join_msg));
 	tick();
 }
 init();
@@ -126,7 +188,7 @@ function initKeyboard(){
 
 		if (keyPressed === 'KeyA' || keyPressed === 'ArrowLeft'){
 			keyStates['Left'] = true;
-			message['Left'] = true;
+
 		}
 		else if (keyPressed === 'KeyW' || keyPressed === 'ArrowUp'){
 			keyStates['Up'] = true;
@@ -159,7 +221,6 @@ function initKeyboard(){
 
 		if (keyReleased === 'KeyA' || keyReleased === 'ArrowLeft'){
 			keyStates['Left'] = false;
-			message['Left'] = false;
 		}
 		else if (keyReleased === 'KeyW' || keyReleased === 'ArrowUp'){
 			keyStates['Up'] = false;
@@ -191,17 +252,26 @@ function loadMap(){
 	world.add(ground.body)
 
 	player = new Player(0, 10,0);
+	// opponent = new Player(0, 10, 0);
 	scene.add(player.mesh);
 	world.add(player.body);
+	// scene.add(opponent.mesh);
+	// world.add(opponent.body);
 
 	world.addContactMaterial(
 		new CANNON.ContactMaterial(player.body.material, ground.body.material,
 			{friction: 0.8, restitution: 0.5})
 	)
+	// world.addContactMaterial(
+	// 	new CANNON.ContactMaterial(opponent.body.material, ground.body.material,
+	// 		{friction: 0.8, restitution: 0.5})
+	// )
+
+
 
 	window.ground = ground;
 	window.player = player;
-
+	// window.opponent = opponent;
 }
 
 /**
@@ -319,6 +389,7 @@ async function loadModels(resource_classes_array){
 	);
 }
 
+
 function tick(){
 	stats.begin();
 
@@ -327,15 +398,6 @@ function tick(){
 		y: player.mesh.position.y,
 		z: player.mesh.position.z
 	};
-
-
-
-	try{
-		keyStates['Left'] = message['Left']
-		log(message['Left']);
-	}
-	catch (e) {
-    }
 
 
 	// log(keyStates);
@@ -354,7 +416,6 @@ function tick(){
 	camera.position.z += player.mesh.position.z-playerLastPosition.z;
 	camera.lookAt(player.mesh.position);
 
-	// console.log(player.mesh.position.x,playerLastPosition.x)
 
 
 	/* update renderer */
@@ -362,14 +423,15 @@ function tick(){
 	renderer.render(scene, camera);
 
 	stats.end();
+
+	game_socket.send(JSON.stringify({
+		'player': player_id,
+		'message': keyStates
+	}));
+
 	/* enqueue next frame */
 	requestAnimationFrame(tick);
 
-
-
-	game_socket.send(JSON.stringify({
-		'message': message
-	}));
 }
 
 
