@@ -10,6 +10,7 @@ from django.db import IntegrityError
 from django.utils.html import escape, escapejs
 from .models import *
 import json
+from . import forms
 
 # Create your views here.
 def index(request):
@@ -65,7 +66,7 @@ def room(request, room_id=None):
             game_state.players.add(player2_model, bulk=False)
             # player1_model.save()
             # player2_model.save()
-            
+
             return render(request, '../templates/gamestate/saved.html', {
                 'room_name_hash': room_name_hash
             })
