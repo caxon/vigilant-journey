@@ -20,3 +20,19 @@ class GameStateForm(forms.Form):
             raise forms.ValidationError("invalid data")
 
         return {'player1': p1_data, 'player2': p2_data}
+
+class LoadGameForm(forms.Form):
+    game_id = forms.CharField(max_length=1024)
+
+    def clean(self):
+        game_room_id = self.changed_data['game_id']
+
+        try:
+            # print(p1_data)
+            rmid = json.loads(game_room_id)
+
+        except:
+            raise forms.ValidationError("invalid data")
+
+        return game_room_id
+

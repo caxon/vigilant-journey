@@ -11,6 +11,7 @@ from django.utils.html import escape, escapejs
 from .models import *
 import json
 from . import forms
+import random
 
 # Create your views here.
 def index(request):
@@ -22,6 +23,7 @@ def room(request, room_id=None):
     user = None
     if request.user.is_authenticated:
         user = request.user
+
 
     if request.method == 'POST':
         # player1 = escape(request.POST['player1'])
@@ -40,8 +42,9 @@ def room(request, room_id=None):
             print(player1)
             print(player2)
 
-            room_name_hash = hash(room_id+0.1)
-
+            # room_name_hash = hash(room_id+0.1)
+            room_name_hash = random.randint(0, 999)
+            room_name_hash = hash(room_name_hash+0.1)
             game_state = GameLobby(
                 room_name=room_name_hash,
             )
@@ -73,3 +76,11 @@ def room(request, room_id=None):
     return render(request, '../templates/gamestate/room.html', {
         'room_id': room_id
     })
+
+
+def load_game(request):
+    if request.method == 'POST':
+        room_name = request.POST['room_id']
+        print(GameLobby.objects.get(room_name=room_name).as_json())
+
+    return render(request, '../templates/gamestate/load.html', {})
