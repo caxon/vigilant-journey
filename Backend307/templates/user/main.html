@@ -1,7 +1,7 @@
 {% extends "user/base2.html" %}
 {% block content2 %}
 
-<h1 >
+<h1>
 	Welcome to 
 </h1>
 <h1 style="font-weight:bold">
@@ -10,7 +10,7 @@
 <div>{{ form.non_field_errors }}</div>
 <br>
 <div class="row">
-	<div class="col-md-6">
+	<div class="col-md-4">
 		<form action="" method="post">
 			{% csrf_token %}
 			<div class="form-group">
@@ -25,14 +25,14 @@
 				</div>
 			</div>
 		</form>
-		<br>
 	</div>
-	<div class="col-md-6">
+	<div class="col-md-4">
 		<label for="roomcode"> Start a room </label> <br>
 		<button name="roomcode" class="btn btn-default form-rounded" id="createGame">Enter</button>
+		<br>
+		<br>
 	</div>
-
-    <div class="col-md-6">
+	<div class="col-md-4">
 		<form action="../load" method="post">
 			{% csrf_token %}
 			<div class="form-group">
