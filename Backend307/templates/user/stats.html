@@ -1,13 +1,26 @@
 {% extends "user/base2.html" %}
 {% block content2 %}
-<div style="padding-top:60px">
 <h1 >
-  Player Stats
+  {{ request.user.username }} Stats
 </h1>
-
-<p> Total Wins </p>
-<p> Totl Losses </p>
-<p> Game History </p>
+<div class="row">
+<div class="col-md-3">
+  <div class="stat p-3 mb-2 text-white form-rounded">
+    <p class="stat lab"> Total Wins </p>
+    <p class="stat count centre">{{ request.user.username }} 20</p>
+  </div>
 </div>
+<div class="col-md-3">
+  <div class="stat p-3 mb-2 text-white form-rounded">
+    <p class="stat lab"> Total Losses  </p>
+    <p class="stat count centre">{{ request.user.username }} 20</p>
+  </div>
+</div>
+</div>
+<div class="hist p-3 mb-2 text-white form-rounded">
+  <p class="lab"> Game History </p>
+  <p class="count">{{ request.user.password }} 20</p>
+</div>
+
 
 {% endblock %}

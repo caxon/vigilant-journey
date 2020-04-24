@@ -26,6 +26,20 @@ h1{
 .form-rounded {
   border-radius: 1rem;
 }
+.stat {
+  background: #ffa700
+}
+.overlay {
+  background:teal;
+}
+
+.hist{
+  max-width: 100%;
+  background:teal
+}
+.stat.count{
+  font-size:2em;
+}
 .btn-rounded {
   border-radius: 0 1rem 1rem 0;
 }
