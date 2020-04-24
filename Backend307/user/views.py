@@ -31,7 +31,7 @@ def get_stats(request):
     context={}
     if not request.user.is_authenticated:
         return render(request, '../templates/user/index.html', context)
-    return render(request, '../templates/user/stats.html', context)
+    return render(request, '../templates/user/main.html', context)
 
 def signup(request):
     context = {}
