@@ -485,7 +485,7 @@ function tick(){
 
 	/* update score */
 	let score_element = document.getElementById('score');
-	score_element.innerHTML = palyer.score;
+	score_element.innerHTML = player.score;
 
 	// log(keyStates);
 
