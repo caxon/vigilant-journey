@@ -5,11 +5,13 @@ import time
 
 # TODO: FINISH THIS
 class GameConsumer(WebsocketConsumer):
-    last_tick_time = time.time()
+    server_start = time.time()
+
 
     def connect(self):
         self.room_id = self.scope['url_route']['kwargs']['room_id']
         self.room_group_name = 'game_%s' % self.room_id
+        self.timer = 60
 
         # Join room group
         async_to_sync(self.channel_layer.group_add)(
@@ -42,29 +44,23 @@ class GameConsumer(WebsocketConsumer):
         #     return
         # self.last_tick_time = time.time()
 
+
         text_data_json = json.loads(text_data)
         message = text_data_json['message']
         user = self.scope['user']
         player = text_data_json['player']
 
-        # if user.is_authenticated:
-        #     async_to_sync(self.channel_layer.group_send)(
-        #         self.room_group_name,
-        #         {
-        #             'type': 'update_game',
-        #             'message': message,
-        #             'player': player
-        #         }
-        #     )
-        # else:
-        #     async_to_sync(self.channel_layer.group_send)(
-        #         self.room_group_name,
-        #         {
-        #             'type': 'update_game',
-        #             'message': message,
-        #             'player': player
-        #         }
-        #     )
+        if time.time() - self.server_start == 60:
+            message = text_data_json['message']
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name,
+                {
+                    'type': 'end_game',
+                    'message': message,
+                    'player': text_data_json['player']
+                }
+            )
+            return
 
         # print(message)
         if message == "join":
@@ -91,6 +87,8 @@ class GameConsumer(WebsocketConsumer):
         message = event['message']
         player = event['player']
 
+        # if 'coin' in message:
+        #     print(message['coin'])
         self.send(text_data=json.dumps({
             'message': message,
             'player': player
@@ -110,7 +108,12 @@ class GameConsumer(WebsocketConsumer):
         self.end_game(event)
 
     def end_game(self, event):
-        pass
+        message = event['message']
+        self.send(text_data=json.dumps({
+            'message': message,
+            'player': event['player']
+        }))
+
 
 
 
