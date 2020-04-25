@@ -129,6 +129,8 @@ function handleMessage(e) {
 			opponent.body.position.set(Number(message['x']), Number(message['y']), Number(message['z']));
 			opponent.update(message);
 
+			console.log(message['score'])
+
 			if('coin' in message && !(typeof coinObjects === 'undefined')){
 				let coin_msg = JSON.parse(message['coin']);
 				// console.log(coin_msg)
@@ -639,6 +641,7 @@ function tick(){
 	keyStates['y'] = playerLastPosition.y;
 	keyStates['z'] = playerLastPosition.z;
 	keyStates['coin'] = JSON.stringify(coin_state);
+	keyStates['score'] = player.score;
 
 
 
