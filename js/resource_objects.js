@@ -6,9 +6,6 @@ let loader = new GLTFLoader();
 
 console.log("Module {objects.js} Loaded");
 
-// var static_url = "../";
-
-
 /** Generic resource object for loading from gltf/glb files */
 class ResourceObject{
 	constructor(x,y,z){

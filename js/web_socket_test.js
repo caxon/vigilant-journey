@@ -1,5 +1,4 @@
 import * as THREE from '../include/three/build/three.module.js';
-import {PointerLockControls} from '../include/three/examples/jsm/controls/PointerLockControls.js';
 import {OrbitControls} from '../include/three/examples/jsm/controls/OrbitControls.js';
 import Stats from '../include/stats/stats.module.js'
 import * as CANNON from '../include/cannon-es/cannon.js';
@@ -11,8 +10,6 @@ import {
 } from './resource_objects.js';
 
 import {
-	Box,
-	GroundPlane,
 	StaticBox,
 } from './objects.js';
 
@@ -22,8 +19,6 @@ import {Player} from './player.js';
 let map ={
 	blocks: null,
 }
-
-var opponentScore = 0;
 
 /* Shortcut because i'm lazy */
 let log = (x) => console.log(x);
@@ -80,16 +75,14 @@ var message = {
 
 game_socket.onmessage = handleMessage; 
 
-
 /**
  * React to gamestate update messages sent from the server
  * 
- * @param {ServerEvent} e 
+ * @param {ServerEvent} e -- message from server
  */
 function handleMessage(e) {
 	var data = JSON.parse(e.data);
 	message = data['message'];
-
 
 	// process the msg only if the sender isn't itself
 	if(player_id !== data['player']){
@@ -131,27 +124,18 @@ function handleMessage(e) {
 			opponent.body.position.set(Number(message['x']), Number(message['y']), Number(message['z']));
 			opponent.update(message);
 
-			console.log(message['score'])
-			opponentScore = message['score']
-
 			if('coin' in message && !(typeof coinObjects === 'undefined')){
 				let coin_msg = JSON.parse(message['coin']);
-				// console.log(coin_msg)
 
+				for (var i = coinObjects.length - 1; i >= 0; i--) {
 
-					for (var i = coinObjects.length - 1; i >= 0; i--) {
-
-						if(coin_msg[i]){
-							coinObjects[i].is_dead = coin_msg[i];
-						}
-
+					if(coin_msg[i]){
+						coinObjects[i].is_dead = coin_msg[i];
 					}
-
+				}
 			}
 		}
-
 	}
-
 }
 
 
@@ -202,11 +186,17 @@ function initStats(){
 	document.body.appendChild( stats.dom );
 }
 
+/**
+ * Initialize the local timer 
+ */
 function start_local_timer(){
 	document.getElementById("timer").innerHTML = local_timer;
 	setTimeout(countdown, 1000);
 }
 
+/**
+ * Decremenet the local timer
+ */
 function countdown(){
 	local_timer -= 1;
 	document.getElementById("timer").innerHTML = local_timer;
@@ -368,12 +358,10 @@ let map_json = {
 	]
 }
 
-
 /**
  * Load map
  */
 function loadMap(){
-
 	map.spawn_pos = map_json.spawn_pos;
 	map.blocks = map_json.blocks;
 	player = new Player(...map.spawn_pos);
@@ -577,9 +565,8 @@ function tick(){
 	/* update player score */
 	let score_element = document.getElementById('score');
 	score_element.innerHTML = player.score;
-	document.getElementById('currentScore').value = player.score;
-	document.getElementById('opponentScore').value = opponentScore;
-
+	let currentScore = document.getElementById('currentScore')
+	currentScore.value = player.score
 
 	/*update physics engine */
 	world.step(1.0 / 60.0);
@@ -645,7 +632,6 @@ function tick(){
 	keyStates['y'] = playerLastPosition.y;
 	keyStates['z'] = playerLastPosition.z;
 	keyStates['coin'] = JSON.stringify(coin_state);
-	keyStates['score'] = player.score;
 
 
 
@@ -678,7 +664,6 @@ function tick(){
 	animation_frame_request = requestAnimationFrame(tick);
 
 }
-
 
 /** 
  * Call this function when the player hits any surcace
@@ -731,40 +716,21 @@ function resetFunction(){
 	camera.position.x = 0;
 }
 
-function loadMapFromJSON(){
-
-}
-
-
 /**
  * Stop game ticks (three.js and cannon.js) and announce the winner.
  * 
  * @param {player id} winner_id -- the id of the winning player.
  */
 function endGame(winner_id= 0){
-	// Updates form in room.html for to signify game over
-	document.getElementById("end").value = 1;
-	// Submits form in room.html for game over
-	document.getElementById("saveForm").submit();
-	
-	// let gameover = document.getElementById("gameover")
-	// if (player_id == winner_id){
-	// 	gameover.innerHTML="Game over! Congratulations, you win! <br>Final score " + player.score;
-	// }
-	// else{
-	// 	gameover.innerHTML="Game over! Too bad, you lost! <br>Final score: "+ player.score;
-	// }
-	// gameover.classList.remove("hidden")
-	// gameover.classList.add("visible")
+	let gameover = document.getElementById("gameover")
+	if (player_id == winner_id){
+		gameover.innerHTML="Game over! Congratulations, you win! <br>Final score " + player.score;
+	}
+	else{
+		gameover.innerHTML="Game over! Too bad, you lost! <br>Final score: "+ player.score;
+	}
+	gameover.classList.remove("hidden")
+	gameover.classList.add("visible")
 
 	window.cancelAnimationFrame(animation_frame_request)
-
 }
-
-
-// Debug: expose variable to the window for debugging:
-window.scene = scene;
-window.world = world;
-window.QuestionMark = QuestionMark;
-window.GoldCoin = GoldCoin;
-world.camera = camera;
