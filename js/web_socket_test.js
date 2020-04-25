@@ -147,15 +147,7 @@ function handleMessage(e) {
 
 	}
 
-<<<<<<< HEAD
-=======
-
-
-
-
-	// console.log(message + '\n');
->>>>>>> 5a398f93743d1cad3baf328cc1a6209ffde273d7
-};
+}
 
 
 /**
