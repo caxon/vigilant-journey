@@ -14,7 +14,7 @@ class SignupForm(forms.Form):
 
     def clean(self):
         cleaned_data = super(SignupForm, self).clean()
-
+        # Confirm that the password and re-entered passwords match
         if ('password' in cleaned_data and 'password_confirm' in cleaned_data) and (cleaned_data['password'] != cleaned_data['password_confirm']):
             self.add_error('password_confirm', 'Password do not match')
 

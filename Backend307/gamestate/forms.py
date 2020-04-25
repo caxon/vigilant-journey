@@ -18,7 +18,6 @@ class GameStateForm(forms.Form):
         end = self.cleaned_data['end']
 
         try:
-            # print(p1_data)
             json_p1 = json.loads(p1_data)
             json_p2 = json.loads(p2_data)
             json_score = json.loads(score_data)

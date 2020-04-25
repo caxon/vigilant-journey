@@ -27,9 +27,6 @@ def room(request, room_id=None):
 
 
     if request.method == 'POST':
-        # player1 = escape(request.POST['player1'])
-        # player2 = escape(request.POST['player2'])
-
         form = forms.GameStateForm(request.POST)
 
         if form.is_valid():
@@ -65,7 +62,6 @@ def room(request, room_id=None):
 
             #saving game for later replay if game has not yet ended
             else:
-                # room_name_hash = hash(room_id+0.1)
                 room_name_hash = random.randint(0, 999)
                 room_name_hash = hash(room_name_hash+0.1)
                 game_state = GameLobby(
@@ -112,6 +108,5 @@ def load_game(request):
             return render(request, '../templates/gamestate/room.html', context)
         except:
             print("lobby not found")
-        # print(GameLobby.objects.get(room_name=room_name).as_json())
 
     return render(request, '../templates/user/main.html', context)
