@@ -20,6 +20,9 @@
 			Time
 			<p class="count centre" id="timer"></p>
 		</div>
+		<div style="margin: auto; left:46%; top:50%; position:fixed;" class="overlay hidden" id="gameover">
+			<p style="margin: 2px"> GAME OVER. You win!</p>
+		</div>
 
 	<script type="x-shader/x-vertex" id="vertexShader">
 
@@ -63,21 +66,25 @@
 		var static_url = "{% get_static_prefix %}";
 		var room_id = "{{ room_id }}"
         let player1 = document.getElementById('player1')
-				let player2 = document.getElementById('player2')
-				let score = document.getElementById('score').innerText
-				let currentScore = document.getElementById('currentScore')
+        let player2 = document.getElementById('player2')
+        let score = document.getElementById('score').innerText
+        let currentScore = document.getElementById('currentScore')
+
 
             player1.value = JSON.stringify({
                 'x': 0,
                 'y': 0,
-                'z': 0
+                'z': 0,
+                'score': currentScore
             })
 
             player2.value = JSON.stringify({
                 'x': 0,
                 'y': 0,
                 'z': 0
-						})
+            })
+
+
 						// currentScore.value = score
 
 	</script>

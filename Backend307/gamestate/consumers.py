@@ -6,7 +6,7 @@ import time
 # TODO: FINISH THIS
 class GameConsumer(WebsocketConsumer):
     server_start = time.time()
-
+    game_end = False
 
     def connect(self):
         self.room_id = self.scope['url_route']['kwargs']['room_id']
@@ -45,12 +45,14 @@ class GameConsumer(WebsocketConsumer):
         # self.last_tick_time = time.time()
 
 
+
+
         text_data_json = json.loads(text_data)
         message = text_data_json['message']
         user = self.scope['user']
         player = text_data_json['player']
+        if time.time() - self.server_start >= 110 and not self.game_end:
 
-        if time.time() - self.server_start == 60:
             message = text_data_json['message']
             async_to_sync(self.channel_layer.group_send)(
                 self.room_group_name,
@@ -60,10 +62,14 @@ class GameConsumer(WebsocketConsumer):
                     'player': text_data_json['player']
                 }
             )
-            return
+            if time.time() - self.server_start >= 120:
+                self.game_end = True
+                self.disconnect(200)
 
-        # print(message)
+
+
         if message == "join":
+            print(message)
             async_to_sync(self.channel_layer.group_send)(
                 self.room_group_name,
                 {
@@ -72,6 +78,8 @@ class GameConsumer(WebsocketConsumer):
                     'player': text_data_json['player']
                 }
             )
+
+        # elif message == ""
 
         # Send message to room group
         async_to_sync(self.channel_layer.group_send)(
@@ -109,6 +117,8 @@ class GameConsumer(WebsocketConsumer):
 
     def end_game(self, event):
         message = event['message']
+        message['end'] = 'end'
+
         self.send(text_data=json.dumps({
             'message': message,
             'player': event['player']
