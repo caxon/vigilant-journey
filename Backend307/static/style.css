@@ -10,6 +10,13 @@ body,html {
   margin: auto;
 }
 
+.hidden{
+  visibility: hidden;
+}
+.visible{
+  visibility: visible;
+}
+
 h1{
   font-family:Oswald;
 }

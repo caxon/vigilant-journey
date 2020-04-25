@@ -37,6 +37,8 @@ let controls;
 let world;
 let groundMat = new CANNON.Material();
 
+/* Animation frame id for stopping later */
+let animation_frame_request;
 
 /* STATS.js GLOBAL OBJECTS */
 let stats;
@@ -46,14 +48,17 @@ let coinObjects = [];
 
 let keyStates;
 
+/* Local timer to tell the player how long they have left. 
+* Server global timer will eventually end the game, not this one */
 let local_timer = 120;
 
-/* track the player with this light to provide player shadows */
+/* track the player with this light to draw shadows near the player  */
 let directional_light;
 
 let player;
 let opponent;
 let player_id;
+
 /**
  * Websocket
  */
@@ -71,7 +76,15 @@ var message = {
 	'Space': false
 };
 
-game_socket.onmessage = function(e) {
+game_socket.onmessage = handleMessage; 
+
+
+/**
+ * React to gamestate update messages sent from the server
+ * 
+ * @param {ServerEvent} e 
+ */
+function handleMessage(e) {
 	var data = JSON.parse(e.data);
 	message = data['message'];
 
@@ -119,23 +132,8 @@ game_socket.onmessage = function(e) {
 
 	}
 
-	// console.log(message + '\n');
 };
 
-
-
-
-// var update_tick = setInterval(send_update, 1);
-//
-// function send_update(){
-// 	if(typeof player_id == "undefined"){
-// 		return;
-// 	}
-// 	game_socket.send(JSON.stringify({
-// 		'player': player_id,
-// 		'message': keyStates
-// 	}));
-// }
 
 /**
  * Run all initialization code in the correct order.
@@ -200,12 +198,18 @@ function countdown(){
 	)
 }
 
+/**
+ * Function called when either the local or global clock runs out.
+ * Locks the game and declares a winner*/
 function timeup(){
 	console.log("TIME IS UP!")
+	endGame(player_id);
 }
 
+/** 
+ * Initialze the keyboard states and add listeners to key downs and key ups.
+ */
 function initKeyboard(){
-
 	keyStates = {
 		'Left': false,
 		'Right': false,
@@ -224,11 +228,8 @@ function initKeyboard(){
 			// ignore repeat (held down) key presses
 			return;
 		}
-		// console.log("Key pressed event: " + keyPressed)
-
 		if (keyPressed === 'KeyA' || keyPressed === 'ArrowLeft'){
 			keyStates['Left'] = true;
-
 		}
 		else if (keyPressed === 'KeyW' || keyPressed === 'ArrowUp'){
 			keyStates['Up'] = true;
@@ -249,19 +250,20 @@ function initKeyboard(){
 			resetFunction();
 		}
 
-		// note space is queued up and only unset by the inputUpdate not keyup event
+		// note space is queued up and only unset by the player and not keyup event
 		else if (keyPressed === "Space" ){
 			keyStates['Space'] = true;
 		}
 
 		else if (keyPressed === "KeyE"){
 			keyStates['E'] = true;
+			endGame()
 		}
 
 	})
+	/* when a key is realeased, remove it from the keystates list */
 	document.addEventListener('keyup', function(event) {
 		let keyReleased = event.code;
-		// console.log("Key released event: " + keyReleased)
 
 		if (keyReleased === 'KeyA' || keyReleased === 'ArrowLeft'){
 			keyStates['Left'] = false;
@@ -278,13 +280,12 @@ function initKeyboard(){
 		else if (keyReleased === 'ShiftLeft' || keyReleased === 'ShiftRight'){
 			keyStates['Shift'] = false;
 		}
-		// else if (keyReleased === 'ControlLeft' || keyReleased === 'ControlRight'){
-		// 	keyStates['Control'] = false;
-		// }
 	})
 }
 
-
+/** all map coins and blocks defined in an js object
+ * For future work: allow differnt maps to be loaded by serving json strings over server
+ */
 let map_json = {
 	blocks:[
 		{ x:0,y:-5,z:0, width:50,height:10,depth:50,color:"red"},
@@ -353,9 +354,6 @@ let map_json = {
  */
 function loadMap(){
 
-	// scene.add(ground.mesh);
-	// console.log(ground)
-	// world.add(ground.body)
 	map.spawn_pos = map_json.spawn_pos;
 	map.blocks = map_json.blocks;
 	player = new Player(...map.spawn_pos);
@@ -396,28 +394,15 @@ function loadMap(){
 
 	/* collision events between the player and an object */
 	player.body.addEventListener("collide", handleClientPlayerCollision)
-	// opponent = new Player(0, 10, 0);
 	scene.add(player.mesh);
 	world.add(player.body);
-	// scene.add(opponent.mesh);
-	// world.add(opponent.body);
 
 	world.addContactMaterial(
 		new CANNON.ContactMaterial(player.body.material, groundMat,
 			{friction: 0.8, restitution: 0.5})
 	)
-	// world.addContactMaterial(
-	// 	new CANNON.ContactMaterial(opponent.body.material, ground.body.material,
-	// 		{friction: 0.8, restitution: 0.5})
-	// )
 
-
-	// scene.add(obj.mesh);
-	// coinObjects.add(obj);
-
-	// window.ground = ground;
 	window.player = player;
-	// window.opponent = opponent;
 }
 
 /** Save map in current state to a json file for loading later */
@@ -441,6 +426,7 @@ function saveMap(){
 }
 
 window.saveMap = saveMap
+
 /**
  * Initialize three.js rendering variables.
  * Must run before any sort of rendering.
@@ -487,21 +473,10 @@ function initThree(){
 	directional_light.shadow.camera.top = 50;
 	scene.add(directional_light);
 
-	// let light = new THREE.PointLight(0xffbbbb);
-	// light.position.set(0, 500, 200);
-	// scene.add(light)
-
-	// let light2 = new THREE.PointLight(0xbbffbb);
-	// light2.position.set(-300, 0, 0);
-	// scene.add(light2);
-
-	// let light_background = new THREE.AmbientLight(0x606060);
-	// scene.add(light_background);
-
 	scene.fog = new THREE.Fog( scene.background, 1, 5000 );
 
 	/*
-	ADD SKYBOX
+	ADD SKYBOX! Uses vertex and fragement shaders defined in the room.html file!
 	*/
 	var vertexShader = document.getElementById( 'vertexShader' ).textContent;
 	var fragmentShader = document.getElementById( 'fragmentShader' ).textContent;
@@ -511,7 +486,6 @@ function initThree(){
 		"offset": { value: 33 },
 		"exponent": { value: 0.6 }
 	};
-	// uniforms[ "topColor" ].value.copy( hemi_light.color );
 
 	scene.fog.color.copy( uniforms[ "bottomColor" ].value );
 
@@ -537,7 +511,8 @@ function initCannon(){
 }
 
 /**
- * Load all GLTF models before using
+ * Load all GLTF models before using. Loads loads model only once.
+ * @param {list} resource_classes_array - a list of all resource js classes to initialize
  */
 async function loadModels(resource_classes_array){
 	// debugger;
@@ -548,18 +523,17 @@ async function loadModels(resource_classes_array){
 			})
 		}
 	);
-	// // Debug: stall to make sure order of loading is correct
-	// promises.push (new Promise( (resolve, reject) =>{
-	// 			setTimeout(resolve, 1000);
-	// 		}));
-
 
 	return Promise.all( promises).then( () =>
 		console.log("ALL RESOURCES LOADED")
 	);
 }
 
-/** When another player gets a coin it removes the coin for all players. */
+/** 
+ * When another player gets a coin it removes the coin for all players. 
+ * 
+ * @param removeCoin 
+ * */
 function removeCoin(coin_id){
 	for (let i = 0 ; i < coinObjects.length ; i++){
 		let coin = coinObjects[i]
@@ -570,6 +544,7 @@ function removeCoin(coin_id){
 }
 
 
+/** handle all behavior */
 function tick(){
 	stats.begin();
 
@@ -579,13 +554,11 @@ function tick(){
 		z: player.mesh.position.z
 	};
 
-	/* update score */
+	/* update player score */
 	let score_element = document.getElementById('score');
 	score_element.innerHTML = player.score;
 	let currentScore = document.getElementById('currentScore')
 	currentScore.value = player.score
-
-	// log(keyStates);
 
 	/*update physics engine */
 	world.step(1.0 / 60.0);
@@ -632,7 +605,6 @@ function tick(){
 }
 
 	/* update renderer */
-	// coinObjects.forEach( (element) => element.update() )
 	renderer.render(scene, camera);
 
 	stats.end();
@@ -661,11 +633,16 @@ function tick(){
 		})
 	}
 	/* enqueue next frame */
-	requestAnimationFrame(tick);
+	animation_frame_request = requestAnimationFrame(tick);
 
 }
 
 
+/** 
+ * Call this function when the player hits any surcace
+ * 
+ * @param {collisionEvent} e -- cannon.js collision event
+ *  */
 function handleClientPlayerCollision(e){
 		if (e.body.userData.type == "ground"){
 			player.jumps_remaining = player.max_jumps;
@@ -675,22 +652,36 @@ function handleClientPlayerCollision(e){
 			console.log("hit a coin! #", coin.coin_id, " value:", coin.value)
 			player.score += coin.value;
 			coin.is_dead = true;
+			// TODO: Send a message to consumer maybe?
+		}
+		if (e.body.userData.type == "player"){
+			let player2 = e.body.userData.ref;
+			console.log("bouncing off another player")
+			let dp = new CANNON.Vec3(
+				player.body.position.x - player2.body.position.x,
+				player.body.position.y - player2.body.position.y,
+				player.body.position.z - player2.body.position.z,
+			) 
+			let norm = dp.length();
+			console.log(norm)
+			dp = dp.scale(1/norm)
+			dp.y += 2;
+			dp = dp.scale(10)
+			player.body.velocity.x += dp.x;
+			player.body.velocity.y += dp.y;
+			player.body.velocity.z += dp.z;
 
-			// TODO: Send a message to consumer
+			// player.body.velocity += dv*10;
 		}
 }
-
-// window.addEventListener("keydown", (/** @type {KeyboardEvent} */event) => {
-// 	if (event.code == 'Space'){
-// 		obj_cannon.velocity.y = 5
-// 	}
-// })
 
 
 
 window.directional_light = directional_light;
 
-/* reset the player and camera positions in case they get stuck */
+/**
+ *  reset the player and camera positions in case they get stuck 
+ * */
 function resetFunction(){
 	player.setPosition(...map.spawn_pos)
 	camera.position.z = 20;
@@ -702,37 +693,25 @@ function loadMapFromJSON(){
 
 }
 
-// function createCannonTestObjects(){
 
-// 	/* Sphere object */
-// 	var radius = 1;
-// 	var mat1 = new CANNON.Material();
-// 	var sphereBody = new CANNON.Body({
-// 		mass: 5,
-// 		position: new CANNON.Vec3(0, 10, 0),
-// 		shape: new CANNON.Sphere(radius),
-// 		material: mat1,
-// 	});
-// 	cannon_world.addBody(sphereBody);
+/**
+ * Stop game ticks (three.js and cannon.js) and announce the winner.
+ * 
+ * @param {player id} winner_id -- the id of the winning player.
+ */
+function endGame(winner_id= 0){
+	let gameover = document.getElementById("gameover")
+	if (player_id == winner_id){
+		gameover.innerHTML="Game over! Congratulations, you win! <br>Final score " + player.score;
+	}
+	else{
+		gameover.innerHTML="Game over! Too bad, you lost! <br>Final score: "+ player.score;
+	}
+	gameover.classList.remove("hidden")
+	gameover.classList.add("visible")
 
-// 	/* Ground plane */
-// 	var groundMat = new CANNON.Material();
-// 	var groundBody = new CANNON.Body({
-// 		mass:0,
-// 		material: groundMat,
-// 	});
-// 	groundBody.quaternion.setFromAxisAngle(new CANNON.Vec3(1,0,0), -Math.PI/2);
-
-// 	var groundShape = new CANNON.Plane();
-// 	groundBody.addShape(groundShape);
-// 	cannon_world.addBody(groundBody);
-// 	cannon_world.addContactMaterial(
-// 		new CANNON.ContactMaterial(groundMat, mat1,
-// 			{friction: 0.0, restitution: 0.5})
-// 	)
-
-// 	obj_cannon = sphereBody;
-// }
+	window.cancelAnimationFrame(animation_frame_request)
+}
 
 
 // Debug: expose variable to the window for debugging:
@@ -740,5 +719,4 @@ window.scene = scene;
 window.world = world;
 window.QuestionMark = QuestionMark;
 window.GoldCoin = GoldCoin;
-
 world.camera = camera;
