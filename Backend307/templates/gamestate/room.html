@@ -5,19 +5,19 @@
 		<div>
 			<form style="margin: auto; left:0px; top:60px; position:fixed;" method="post">
 					{% csrf_token %}
-			    <input type="text" id="player1" name="player1"/>
-					<input type="text" id="player2" name="player2"/>
-					<input type="submit" value="Save" id="Save">
-					<input style = "visibility:hidden;" type="text" id="currentScore" name="currentScore"/>
+					<input class = "btn btn-info" style = "width:75px;" type="submit" value="Save" id="Save">
+			    <input style = "visibility:hidden;width:75px;" type="text" id="player1" name="player1"/>
+					<input style = "visibility:hidden;width:75px;" type="text" id="player2" name="player2"/>
+					<input style = "visibility:hidden;width:75px;" type="text" id="currentScore" name="currentScore"/>
 					<!-- <input type="submit" value="Save" id="Save"> -->
 				</form>
 		</div>
-		<div style="margin: auto; left:0px; top:100px; position:fixed;" class="overlay p-3 mb-2 text-white form-rounded">
-			<p class="lab"> Score </p>
+		<div style="margin: auto; width:75px;left:0px; top:105px; position:fixed;" class="overlay p-3 mb-2 text-white form-rounded">
+			Score
 			<p class="count centre" id="score"></p>
 		</div>
-		<div style="margin: auto; left:0px; top:200px; position:fixed;" class="overlay p-3 mb-2 text-white form-rounded">
-			<p class="lab"> Time </p>
+		<div style="margin: auto; width:75px;left:0px; top:190px; position:fixed;" class="overlay p-3 mb-2 text-white form-rounded">
+			Time
 			<p class="count centre" id="timer"></p>
 		</div>
 		<div style="margin: auto; left:46%; top:50%; position:fixed;" class="overlay hidden" id="gameover">
@@ -66,21 +66,25 @@
 		var static_url = "{% get_static_prefix %}";
 		var room_id = "{{ room_id }}"
         let player1 = document.getElementById('player1')
-				let player2 = document.getElementById('player2')
-				let score = document.getElementById('score').innerText
-				let currentScore = document.getElementById('currentScore')
+        let player2 = document.getElementById('player2')
+        let score = document.getElementById('score').innerText
+        let currentScore = document.getElementById('currentScore')
+
 
             player1.value = JSON.stringify({
                 'x': 0,
                 'y': 0,
-                'z': 0
+                'z': 0,
+                'score': currentScore
             })
 
             player2.value = JSON.stringify({
                 'x': 0,
                 'y': 0,
                 'z': 0
-						})
+            })
+
+
 						// currentScore.value = score
 
 	</script>

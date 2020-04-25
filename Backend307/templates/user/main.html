@@ -11,20 +11,20 @@
 <br>
 <div class="row">
 	<div class="col-md-4">
-		<form action="" method="post">
-			{% csrf_token %}
+		<!-- <form action="" method="post"> -->
+			<!-- {% csrf_token %} -->
 			<div class="form-group">
 				<label for="roomcode"> Join a room </label>
 				<br>
 				<div class="input-group mb-3" style="max-width: 20em;">
-					<input type="text" class="form-control form-rounded" name="roomcode" placeholder="room code">
+					<input type="text" class="form-control form-rounded" id = "roomcode" name="roomcode" placeholder="room code">
 					<div class="input-group-append">
-						<button class="btn btn-default btn-rounded" type="submit">Enter</button>
+						<button class="btn btn-default btn-rounded" id="joinroom" type="submit">Enter</button>
 					</div>
-					{{ form.roomcode.errors }}
+					<!-- {{ form.roomcode.errors }} -->
 				</div>
 			</div>
-		</form>
+		<!-- </form> -->
 	</div>
 	<div class="col-md-4">
 		<label for="roomcode"> Start a room </label> <br>
@@ -53,6 +53,10 @@
 <script>
 	document.getElementById("createGame").onclick = function(){
 		var num = Math.floor(Math.random()*1000);
+		location.href="../game/"+num;
+	};
+	document.getElementById("joinroom").onclick = function(){
+		var num = document.getElementById("roomcode").value
 		location.href="../game/"+num;
 	};
 </script>

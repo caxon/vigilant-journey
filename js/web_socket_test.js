@@ -128,10 +128,33 @@ function handleMessage(e) {
 		else {
 			opponent.body.position.set(Number(message['x']), Number(message['y']), Number(message['z']));
 			opponent.update(message);
+
+			if('coin' in message && !(typeof coinObjects === 'undefined')){
+				let coin_msg = JSON.parse(message['coin']);
+				// console.log(coin_msg)
+
+
+					for (var i = coinObjects.length - 1; i >= 0; i--) {
+
+						if(coin_msg[i]){
+							coinObjects[i].is_dead = coin_msg[i];
+						}
+
+					}
+
+			}
 		}
 
 	}
 
+<<<<<<< HEAD
+=======
+
+
+
+
+	// console.log(message + '\n');
+>>>>>>> 5a398f93743d1cad3baf328cc1a6209ffde273d7
 };
 
 
@@ -595,23 +618,38 @@ function tick(){
 	directional_light.target = player.mesh;
 
 	/* loop through backwards to allow for dynamic deletion */
-	for (var i = coinObjects.length - 1; i >= 0; i--) {
+	if(typeof  coinObjects !== 'undefined'){
+		for (var i = coinObjects.length - 1; i >= 0; i--) {
 		coinObjects[i].update();
 		// console.log(coinObjects[i].mesh.position)
-    if (coinObjects[i].is_dead) { 
-				world.removeBody(coinObjects[i].collider)
-				scene.remove(coinObjects[i].mesh)
-    }
+    	if (coinObjects[i].is_dead) {
+    		world.removeBody(coinObjects[i].collider)
+			scene.remove(coinObjects[i].mesh)
+    	}
+	}
+
+
 }
 
 	/* update renderer */
 	renderer.render(scene, camera);
 
 	stats.end();
+
+	let coin_state = {}
+	if(typeof  coinObjects !== 'undefined') {
+		for (var i = coinObjects.length - 1; i >= 0; i--) {
+			coin_state[i] = coinObjects[i].is_dead
+		}
+	}
+
 	keyStates['x'] = playerLastPosition.x;
 	keyStates['y'] = playerLastPosition.y;
 	keyStates['z'] = playerLastPosition.z;
-	
+	keyStates['coin'] = JSON.stringify(coin_state);
+
+
+
 	game_socket.send(JSON.stringify({
 		'player': player_id,
 		'message': keyStates
@@ -632,6 +670,11 @@ function tick(){
 			'z': opponent.body.position.z
 		})
 	}
+
+	// Save coins
+
+	// End save coins
+
 	/* enqueue next frame */
 	animation_frame_request = requestAnimationFrame(tick);
 
