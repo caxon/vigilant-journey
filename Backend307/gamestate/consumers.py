@@ -51,7 +51,7 @@ class GameConsumer(WebsocketConsumer):
         message = text_data_json['message']
         user = self.scope['user']
         player = text_data_json['player']
-        if time.time() - self.server_start >= 10 and not self.game_end:
+        if time.time() - self.server_start >= 110 and not self.game_end:
 
             message = text_data_json['message']
             async_to_sync(self.channel_layer.group_send)(
@@ -62,7 +62,7 @@ class GameConsumer(WebsocketConsumer):
                     'player': text_data_json['player']
                 }
             )
-            if time.time() - self.server_start >= 20:
+            if time.time() - self.server_start >= 120:
                 self.game_end = True
                 self.disconnect(200)
 
