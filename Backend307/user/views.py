@@ -44,7 +44,6 @@ def signup(request):
                     email=form.cleaned_data['email'],
                     password=form.cleaned_data['password']
                 )
-                # TODO: login page
                 return HttpResponseRedirect(reverse('login'))
             except IntegrityError:
                 form.add_error('username', 'Username is taken')
