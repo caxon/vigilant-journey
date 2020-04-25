@@ -39,13 +39,6 @@ class GameConsumer(WebsocketConsumer):
 
 
     def receive(self, text_data=None, bytes_data=None):
-        # Server tick.
-        # if time.time() - self.last_tick_time <= 0.02:
-        #     return
-        # self.last_tick_time = time.time()
-
-
-
 
         text_data_json = json.loads(text_data)
         message = text_data_json['message']

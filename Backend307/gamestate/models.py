@@ -44,14 +44,6 @@ class GamePlayer(models.Model):
     y = models.FloatField(default=0)
     z = models.FloatField(default=0)
 
-
-    # user = models.ForeignKey(
-    #     User,
-    #     related_name="players",
-    #     on_delete=models.CASCADE,
-    #     default=""
-    # )
-
     gamelobby = models.ForeignKey(
         GameLobby,
         related_name="players",
