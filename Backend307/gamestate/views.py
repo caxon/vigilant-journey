@@ -20,10 +20,11 @@ def index(request):
 
 @login_required #enforces login (?)
 def room(request, room_id=None):
+    context = {}
     user = None
     if request.user.is_authenticated:
         user = request.user
-        
+
 
     if request.method == 'POST':
         # player1 = escape(request.POST['player1'])
@@ -35,6 +36,8 @@ def room(request, room_id=None):
             player1 = form.cleaned_data['player1']
             player2 = form.cleaned_data['player2']
             currentScore = form.cleaned_data['currentScore']
+            opponentScore = form.cleaned_data['opponentScore']
+            end = form.cleaned_data['end']
 
             player1 = json.loads(player1)
             player2 = json.loads(player2)
@@ -46,35 +49,51 @@ def room(request, room_id=None):
                 user.profile.highscore = int(currentScore)
             user.save()
 
-            # room_name_hash = hash(room_id+0.1)
-            room_name_hash = random.randint(0, 999)
-            room_name_hash = hash(room_name_hash+0.1)
-            game_state = GameLobby(
-                room_name=room_name_hash,
-            )
+            #updating win/lost if the game has ended
+            if end != "0":
+                print("game done")
+                context['result']= "tied"
+                if int(currentScore)>int(opponentScore):
+                    user.profile.wins = user.profile.wins+1
+                    user.save()
+                    context['result']= "won"
+                elif int(currentScore)<int(opponentScore):
+                    user.profile.losses = user.profile.losses+1
+                    user.save()
+                    context['result']= "lost"
+                return render(request, '../templates/gamestate/endgame.html', context)
 
-            game_state.save()
-            player1_model = GamePlayer(
-                x=player1['x'],
-                y=player1['y'],
-                z=player1['z'],
+            #saving game for later replay if game has not yet ended
+            else:
+                # room_name_hash = hash(room_id+0.1)
+                room_name_hash = random.randint(0, 999)
+                room_name_hash = hash(room_name_hash+0.1)
+                game_state = GameLobby(
+                    room_name=room_name_hash,
+                )
 
-            )
+                game_state.save()
+                player1_model = GamePlayer(
+                    x=player1['x'],
+                    y=player1['y'],
+                    z=player1['z'],
 
-            player2_model = GamePlayer(
-                x=player2['x'],
-                y=player2['y'],
-                z=player2['z']
-            )
+                )
 
-            game_state.players.add(player1_model, bulk=False)
-            game_state.players.add(player2_model, bulk=False)
+                player2_model = GamePlayer(
+                    x=player2['x'],
+                    y=player2['y'],
+                    z=player2['z']
+                )
 
-            player1_model.save()
-            player2_model.save()
+                game_state.players.add(player1_model, bulk=False)
+                game_state.players.add(player2_model, bulk=False)
 
-            print(game_state.as_json()['users'][0])
-            return render(request, '../templates/gamestate/saved.html', game_state.as_json())
+                player1_model.save()
+                player2_model.save()
+
+                print(game_state.as_json()['users'][0])
+                return render(request, '../templates/gamestate/saved.html', game_state.as_json())
 
 
     return render(request, '../templates/gamestate/room.html', {

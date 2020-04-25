@@ -23,6 +23,8 @@ let map ={
 	blocks: null,
 }
 
+var opponentScore = 0;
+
 /* Shortcut because i'm lazy */
 let log = (x) => console.log(x);
 
@@ -128,6 +130,9 @@ function handleMessage(e) {
 		else {
 			opponent.body.position.set(Number(message['x']), Number(message['y']), Number(message['z']));
 			opponent.update(message);
+
+			console.log(message['score'])
+			opponentScore = message['score']
 
 			if('coin' in message && !(typeof coinObjects === 'undefined')){
 				let coin_msg = JSON.parse(message['coin']);
@@ -572,8 +577,9 @@ function tick(){
 	/* update player score */
 	let score_element = document.getElementById('score');
 	score_element.innerHTML = player.score;
-	let currentScore = document.getElementById('currentScore')
-	currentScore.value = player.score
+	document.getElementById('currentScore').value = player.score;
+	document.getElementById('opponentScore').value = opponentScore;
+
 
 	/*update physics engine */
 	world.step(1.0 / 60.0);
@@ -639,6 +645,7 @@ function tick(){
 	keyStates['y'] = playerLastPosition.y;
 	keyStates['z'] = playerLastPosition.z;
 	keyStates['coin'] = JSON.stringify(coin_state);
+	keyStates['score'] = player.score;
 
 
 
@@ -735,17 +742,20 @@ function loadMapFromJSON(){
  * @param {player id} winner_id -- the id of the winning player.
  */
 function endGame(winner_id= 0){
-	let gameover = document.getElementById("gameover")
-	if (player_id == winner_id){
-		gameover.innerHTML="Game over! Congratulations, you win! <br>Final score " + player.score;
-	}
-	else{
-		gameover.innerHTML="Game over! Too bad, you lost! <br>Final score: "+ player.score;
-	}
-	gameover.classList.remove("hidden")
-	gameover.classList.add("visible")
+	document.getElementById("end").value = 1;
+	document.getElementById("saveForm").submit();
+	// let gameover = document.getElementById("gameover")
+	// if (player_id == winner_id){
+	// 	gameover.innerHTML="Game over! Congratulations, you win! <br>Final score " + player.score;
+	// }
+	// else{
+	// 	gameover.innerHTML="Game over! Too bad, you lost! <br>Final score: "+ player.score;
+	// }
+	// gameover.classList.remove("hidden")
+	// gameover.classList.add("visible")
 
 	window.cancelAnimationFrame(animation_frame_request)
+
 }
 
 
