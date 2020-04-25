@@ -3,12 +3,14 @@
 {% load static %}
 
 		<div>
-			<form style="margin: auto; left:0px; top:60px; position:fixed;" method="post">
+			<form style="margin: auto; left:0px; top:60px; position:fixed;" id = "saveForm" method="post">
 				{% csrf_token %}
 				<input class = "btn btn-info" style = "width:75px;" type="submit" value="Save" id="Save">
 				<input style = "visibility:hidden;width:75px;" type="text" id="player1" name="player1"/>
 				<input style = "visibility:hidden;width:75px;" type="text" id="player2" name="player2"/>
 				<input style = "visibility:hidden;width:75px;" type="text" id="currentScore" name="currentScore"/>
+				<input style = "visibility:hidden;width:75px;" type="text" id="opponentScore" name="opponentScore"/>
+				<input style = "visibility:hidden;width:75px;" type="text" id="end" value="0" name="end"/>
 				<!-- <input type="submit" value="Save" id="Save"> -->
 			</form>
 		</div>
@@ -23,15 +25,6 @@
 		<div style="margin: auto; left:46%; top:50%; position:fixed;" class="overlay hidden" id="gameover">
 			<p style="margin: 2px"> GAME OVER. You win!</p>
 		</div>
-
-		<form style="visibility:hidden; margin: auto; left:0px; top:120px; position:fixed;" method="post">
-			{% csrf_token %}
-			<input class = "btn btn-info" style = "width:75px;" type="submit" value="end" id="End">
-			<input style = "width:75px;" type="text" id="finalScore" name="finalScore"/>
-			<!-- <input type="submit" value="Save" id="Save"> -->
-		</form>
-
-
 
 	<script type="x-shader/x-vertex" id="vertexShader">
 
@@ -77,7 +70,7 @@
         let player1 = document.getElementById('player1')
         let player2 = document.getElementById('player2')
         let score = document.getElementById('score').innerText
-        let currentScore = document.getElementById('currentScore')
+				let currentScore = document.getElementById('currentScore')
 
 
             player1.value = JSON.stringify({
