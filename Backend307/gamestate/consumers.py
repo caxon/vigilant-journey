@@ -87,6 +87,8 @@ class GameConsumer(WebsocketConsumer):
         message = event['message']
         player = event['player']
 
+        # if 'coin' in message:
+        #     print(message['coin'])
         self.send(text_data=json.dumps({
             'message': message,
             'player': player
@@ -111,7 +113,7 @@ class GameConsumer(WebsocketConsumer):
             'message': message,
             'player': event['player']
         }))
-        
+
 
 
 
