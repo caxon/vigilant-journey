@@ -24,6 +24,15 @@
 			<p style="margin: 2px"> GAME OVER. You win!</p>
 		</div>
 
+		<form style="visibility:hidden; margin: auto; left:0px; top:120px; position:fixed;" method="post">
+			{% csrf_token %}
+			<input class = "btn btn-info" style = "width:75px;" type="submit" value="end" id="End">
+			<input style = "width:75px;" type="text" id="finalScore" name="finalScore"/>
+			<!-- <input type="submit" value="Save" id="Save"> -->
+		</form>
+
+
+
 	<script type="x-shader/x-vertex" id="vertexShader">
 
 		varying vec3 vWorldPosition;

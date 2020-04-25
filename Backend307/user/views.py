@@ -65,6 +65,7 @@ def do_login(request):
             if user is not None:
                 login(request, user)
                 if 'next' in request.GET:
+                    request.session['username']=user.username
                     return HttpResponseRedirect(request.GET['next'])
                 return HttpResponseRedirect(reverse('info'))
             else:
@@ -76,6 +77,7 @@ def do_login(request):
 
 def do_logout(request):
     logout(request)
+    request.session['username']=""
     return HttpResponseRedirect(reverse('index'))
 
 
