@@ -23,7 +23,7 @@ def room(request, room_id=None):
     user = None
     if request.user.is_authenticated:
         user = request.user
-
+        
 
     if request.method == 'POST':
         # player1 = escape(request.POST['player1'])

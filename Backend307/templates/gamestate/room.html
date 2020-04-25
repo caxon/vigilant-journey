@@ -4,13 +4,13 @@
 
 		<div>
 			<form style="margin: auto; left:0px; top:60px; position:fixed;" method="post">
-					{% csrf_token %}
-					<input class = "btn btn-info" style = "width:75px;" type="submit" value="Save" id="Save">
-			    <input style = "visibility:hidden;width:75px;" type="text" id="player1" name="player1"/>
-					<input style = "visibility:hidden;width:75px;" type="text" id="player2" name="player2"/>
-					<input style = "visibility:hidden;width:75px;" type="text" id="currentScore" name="currentScore"/>
-					<!-- <input type="submit" value="Save" id="Save"> -->
-				</form>
+				{% csrf_token %}
+				<input class = "btn btn-info" style = "width:75px;" type="submit" value="Save" id="Save">
+				<input style = "visibility:hidden;width:75px;" type="text" id="player1" name="player1"/>
+				<input style = "visibility:hidden;width:75px;" type="text" id="player2" name="player2"/>
+				<input style = "visibility:hidden;width:75px;" type="text" id="currentScore" name="currentScore"/>
+				<!-- <input type="submit" value="Save" id="Save"> -->
+			</form>
 		</div>
 		<div style="margin: auto; width:75px;left:0px; top:105px; position:fixed;" class="overlay p-3 mb-2 text-white form-rounded">
 			Score

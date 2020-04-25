@@ -5,7 +5,7 @@ from user.views import *
 class ViewTest(TestCase):
   def setUp(self):
     self.client = Client()
-  #Checking that webpages are handled and user is sent to some page (status =/= 404)
+  #Checking that webpages are successfully handled and user is sent to some page (status =/= 404)
   #Valid Login/Signup
   def test_logged(self):
       response = self.client.post('/login',{'username':"asdfasdf",'password':'asdfasdf'})
