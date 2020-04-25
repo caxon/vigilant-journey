@@ -47,9 +47,9 @@ def room(request, room_id=None):
             #saving highscore
             if int(currentScore)>int(user.profile.highscore):
                 user.profile.highscore = int(currentScore)
-            user.save()
+                user.save()
 
-            #updating win/lost if the game has ended
+            #updating win/loss total if the game has ended
             if end != "0":
                 print("game done")
                 context['result']= "tied"

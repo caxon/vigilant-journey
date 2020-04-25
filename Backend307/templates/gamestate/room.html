@@ -1,8 +1,9 @@
 {% extends "user/base.html" %}
 {% block content %}
 {% load static %}
-
+<!-- Game Page -->
 		<div>
+			<!-- Hidden form for saving, logging game info -->
 			<form style="margin: auto; left:0px; top:60px; position:fixed;" id = "saveForm" method="post">
 				{% csrf_token %}
 				<input class = "btn btn-info" style = "width:75px;" type="submit" value="Save" id="Save">
@@ -11,9 +12,9 @@
 				<input style = "visibility:hidden;width:75px;" type="text" id="currentScore" name="currentScore"/>
 				<input style = "visibility:hidden;width:75px;" type="text" id="opponentScore" name="opponentScore"/>
 				<input style = "visibility:hidden;width:75px;" type="text" id="end" value="0" name="end"/>
-				<!-- <input type="submit" value="Save" id="Save"> -->
 			</form>
 		</div>
+		<!-- Overlay for Current Score, Time Left -->
 		<div style="margin: auto; width:75px;left:0px; top:105px; position:fixed;" class="overlay p-3 mb-2 text-white form-rounded">
 			Score
 			<p class="count centre" id="score"></p>
@@ -22,9 +23,9 @@
 			Time
 			<p class="count centre" id="timer"></p>
 		</div>
-		<div style="margin: auto; left:46%; top:50%; position:fixed;" class="overlay hidden" id="gameover">
+		<!-- <div style="margin: auto; left:46%; top:50%; position:fixed;" class="overlay hidden" id="gameover">
 			<p style="margin: 2px"> GAME OVER. You win!</p>
-		</div>
+		</div> -->
 
 	<script type="x-shader/x-vertex" id="vertexShader">
 
@@ -59,6 +60,7 @@
 
 	</script>
 	<script>
+		// Updates hidden form
         {% if loaded_room %}
             var room_info = "{{loaded_room | escapejs}}";
             let num = Math.floor(Math.random()*1000);
@@ -86,16 +88,9 @@
                 'z': 0
             })
 
-
-						// currentScore.value = score
-
 	</script>
 
-
-
-
-
-
+<!-- Main Game Script -->
 	<script src="{% static 'js/web_socket_test.js' %}" type="module"></script>
 
 

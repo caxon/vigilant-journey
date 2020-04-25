@@ -1,8 +1,9 @@
 {% extends "user/base2.html" %}
 {% block content2 %}
-<h1 >
+<h1>
   {{ request.user.username }} Profile
 </h1>
+<!-- User stats on Total Wins, Total Losses, and Highscore -->
 <div class="row">
 <div class="col-md-3">
   <div class="stat p-3 mb-2 text-white form-rounded">
@@ -23,10 +24,8 @@
   </div>
 </div>
 </div>
-<div class="hist p-3 mb-2 text-white form-rounded">
+<!-- <div class="hist p-3 mb-2 text-white form-rounded">
   <p class="lab"> Game History </p>
-  <p class="count">{{ request.user.password }}</p>
-</div>
-
-
+  <p class="count">{{ request.user.wins }}</p>
+</div> -->
 {% endblock %}

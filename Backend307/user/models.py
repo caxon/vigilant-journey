@@ -15,6 +15,7 @@ from django.dispatch import receiver
 #     winner = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='winner')
 
 
+# Basic stats info for user
 class Profile(models.Model):
   user = models.OneToOneField(User, on_delete=models.CASCADE)
   bio = models.TextField(max_length=500, blank=True)

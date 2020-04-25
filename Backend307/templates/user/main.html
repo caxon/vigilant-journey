@@ -1,6 +1,6 @@
 {% extends "user/base2.html" %}
 {% block content2 %}
-
+<!-- Main Game Page after logging in -->
 <h1>
 	Welcome to 
 </h1>
@@ -10,28 +10,27 @@
 <div>{{ form.non_field_errors }}</div>
 <br>
 <div class="row">
+	<!-- Join Room -->
 	<div class="col-md-4">
-		<!-- <form action="" method="post"> -->
-			<!-- {% csrf_token %} -->
-			<div class="form-group">
-				<label for="roomcode"> Join a room </label>
-				<br>
-				<div class="input-group mb-3" style="max-width: 20em;">
-					<input type="text" class="form-control form-rounded" id = "roomcode" name="roomcode" placeholder="room code">
-					<div class="input-group-append">
-						<button class="btn btn-default btn-rounded" id="joinroom" type="submit">Enter</button>
-					</div>
-					<!-- {{ form.roomcode.errors }} -->
+		<div class="form-group">
+			<label for="roomcode"> Join a room </label>
+			<br>
+			<div class="input-group mb-3" style="max-width: 20em;">
+				<input type="text" class="form-control form-rounded" id = "roomcode" name="roomcode" placeholder="room code">
+				<div class="input-group-append">
+					<button class="btn btn-default btn-rounded" id="joinroom" type="submit">Enter</button>
 				</div>
 			</div>
-		<!-- </form> -->
+		</div>
 	</div>
+	<!-- Make a New Room -->
 	<div class="col-md-4">
 		<label for="roomcode"> Start a room </label> <br>
-		<button name="roomcode" class="btn btn-default form-rounded" id="createGame">Enter</button>
+		<button name="roomcode" class="btn btn-default form-rounded" id="createGame">Create</button>
 		<br>
 		<br>
 	</div>
+	<!-- Load Game -->
 	<div class="col-md-4">
 		<form action="../game/load" method="post">
 			{% csrf_token %}
@@ -50,6 +49,7 @@
 	</div>
 </div>
 
+<!-- Scripts for join room, new room (redirects to game page) -->
 <script>
 	document.getElementById("createGame").onclick = function(){
 		var num = Math.floor(Math.random()*1000);

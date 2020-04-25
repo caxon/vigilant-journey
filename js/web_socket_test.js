@@ -742,8 +742,11 @@ function loadMapFromJSON(){
  * @param {player id} winner_id -- the id of the winning player.
  */
 function endGame(winner_id= 0){
+	// Updates form in room.html for to signify game over
 	document.getElementById("end").value = 1;
+	// Submits form in room.html for game over
 	document.getElementById("saveForm").submit();
+	
 	// let gameover = document.getElementById("gameover")
 	// if (player_id == winner_id){
 	// 	gameover.innerHTML="Game over! Congratulations, you win! <br>Final score " + player.score;
