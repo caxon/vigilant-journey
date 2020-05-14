@@ -1,10 +1,12 @@
 # vigilant-journey
 Game project for COMP 307 Final Project @McGill University
 
+The game is a multiplayer platformer made using three.js for rendering and cannon.js for physics.
+
 1. Group members
-Chris Axon   260735894
-Julia Luo    260739234
-Muhang Li    260736135
+Chris Axon  (frontend)
+Julia Luo   (frontend + backend) 
+Muhang Li   (backend)
 
 2. How to run:
 Inside of the Backend307 folder, run the scripts below:
